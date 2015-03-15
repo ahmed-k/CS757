@@ -74,6 +74,10 @@ public class MoviePairs {
             highID = _highID;
         }
 
+        public void setUserID(Integer userID) {
+            this.userID = userID;
+        }
+
         @Override
         public int compareTo(PairKey other) {
             int _lowCompare = lowID.compareTo(other.getLowID());
@@ -213,6 +217,7 @@ public class MoviePairs {
                     for (int j = i+1 ; j < arr.length ; j++) {
                         _key.setLowID(arr[i]);
                         _key.setHighID(arr[j]);
+                        _key.setUserID(e.getKey());
                         context.write(_key, one);
                     }//for j
 
