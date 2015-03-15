@@ -165,7 +165,7 @@ public class MoviePairs {
         public int compare(WritableComparable w1, WritableComparable w2) {
             PairKey k1 = (PairKey) w1;
             PairKey k2 = (PairKey) w2;
-            return k1.getLowID().compareTo(k2.getLowID());
+            return k1.compareTo(k2);
         }
     }
 
