@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Created by Ahmed Alabdullah on 3/15/15.
@@ -126,6 +125,33 @@ public class MoviePairs {
      */
 
 
+    public static class PairMapper extends Mapper<Text, Text, Text, Text> {
+
+        private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
+        private IntWritable one = new IntWritable(1);
+
+        public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+
+
+            Text k = new Text();
+            k.set("KEY:"+key.toString());
+
+            context.write(k, value);
+
+
+
+        }//map
+
+
+
+
+
+    }//PairMapper
+
+
+    /*
+
+
     public static class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
         private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
@@ -174,29 +200,46 @@ public class MoviePairs {
 
 
     }//PairMapper
-
+    */
 
     /**
      *          REDUCER
      */
+
+    public static class PairReducer extends Reducer<Text, Text, Text, Text> {
+
+        public void reduce(Text key, Text value, Context context) throws IOException, InterruptedException {
+            context.write(key, value);
+        } //reduce
+
+    }
+
+
+    /*
 
     public static class PairReducer extends Reducer<PairKey, Iterable<IntWritable>, Text, IntWritable> {
 
         public void reduce(PairKey key, Iterable<IntWritable> vals, Context context) throws IOException, InterruptedException {
 
             int sum = 0;
+
             for (IntWritable val : vals) {
                 sum+= val.get();
             }//for
+
             IntWritable result = new IntWritable(sum);
             context.write(new Text(key.toString()), result);
         } //reduce
 
     }
 
+    */
+
+
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
+
         if (otherArgs.length != 2) {
             System.err.println("Usage: moviepairs <in> <out>");
             System.exit(2);
@@ -207,16 +250,30 @@ public class MoviePairs {
 
         job.setJarByClass(MoviePairs.class);
 
+        /*
         job.setPartitionerClass(NaturalKeyPartitioner.class);
         job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
+        */
+
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
 
+
+        /*
+        job.setMapOutputKeyClass(PairKey.class);
+        job.setMapOutputValueClass(IntWritable.class);
+        */
+
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        /*
         job.setMapOutputKeyClass(PairKey.class);
         job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
+        */
 
         job.setInputFormatClass(KeyValueTextInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
