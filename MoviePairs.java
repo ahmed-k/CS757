@@ -240,9 +240,7 @@ public class MoviePairs {
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
-
-        job.setMapOutputKeyClass(PairKey.class);
-        job.setMapOutputValueClass(IntWritable.class);
+        
 
         //job.setMapOutputKeyClass(PairKey.class);
         //job.setMapOutputValueClass(IntWritable.class);
