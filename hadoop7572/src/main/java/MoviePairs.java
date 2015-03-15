@@ -102,6 +102,7 @@ public class MoviePairs {
 
         @Override
         public boolean equals(Object o) {
+
             if (this == o) {
                 return true;
             }
@@ -123,7 +124,7 @@ public class MoviePairs {
         public int hashCode() {
             int _lowHash = this.lowID != null ? this.lowID.hashCode() : 0 ;
             int _highHash = this.highID != null ? this.highID.hashCode() : 0 ;
-            return 167 * (_lowHash + _highHash);
+            return 163 * (_lowHash + _highHash);
         }
     }
 
@@ -259,8 +260,8 @@ public class MoviePairs {
         job.setJarByClass(MoviePairs.class);
 
 
-        job.setPartitionerClass(NaturalKeyPartitioner.class);
-        job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
+//        job.setPartitionerClass(NaturalKeyPartitioner.class);
+//        job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
 
         //map-reduce classes
         job.setMapperClass(PairMapper.class);
