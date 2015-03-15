@@ -76,7 +76,7 @@ public class MoviePairs {
 
         @Override
         public int compareTo(PairKey other) {
-            return 0; 
+            return 0;
         }
 
         @Override
@@ -258,9 +258,9 @@ public class MoviePairs {
 
         job.setJarByClass(MoviePairs.class);
 
-       job.setSortComparatorClass(CompositeKeyComparator.class);
-       job.setPartitionerClass(NaturalKeyPartitioner.class);
-       job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
+//       job.setSortComparatorClass(CompositeKeyComparator.class);
+//       job.setPartitionerClass(NaturalKeyPartitioner.class);
+//       job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
 
         //map-reduce classes
         job.setMapperClass(PairMapper.class);
