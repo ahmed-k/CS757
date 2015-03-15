@@ -180,6 +180,7 @@ public class MoviePairs {
 
         private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
         private IntWritable one = new IntWritable(1);
+        private PairKey _key = new PairKey();
 
         public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
             Integer userID = new Integer(key.toString());
@@ -207,7 +208,9 @@ public class MoviePairs {
                 Integer [] arr = _set.toArray(new Integer[_set.size()]);
                 for (int i = 0 ; i < arr.length-1 ; i++) {
                     for (int j = i+1 ; j < arr.length ; j++) {
-                        context.write(new PairKey(arr[i],arr[j]), one);
+                        _key.setLowID(arr[i]);
+                        _key.setHighID(arr[j]);
+                        context.write(_key, one);
                     }//for j
 
                 }//for i
