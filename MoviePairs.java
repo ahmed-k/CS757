@@ -16,6 +16,8 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -68,7 +70,7 @@ public class MoviePairs {
             lowID = new Integer(dataInput.readInt());
             highID = new Integer(dataInput.readInt());
         }
-        
+
         @Override
         public String toString() {
             return "<" + lowID + ", " + highID + ">";
@@ -126,29 +128,47 @@ public class MoviePairs {
 
     public static class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
-        private SortedSet<Integer> candidates = new TreeSet<Integer>();
+        private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
         private IntWritable one = new IntWritable(1);
+
         public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-            Text userID = new Text();
-            userID.set(key.toString());
+            Integer userID = new Integer(key.toString());
             String[] vals = value.toString().split("\t");
             String _movieID = vals[0];
             String _rating = vals[1];
             Integer movieID = new Integer(_movieID);
             Integer rating = new Integer(_rating);
             if (rating > 3) {
+                SortedSet candidates  = temp.remove(userID);
+                if (candidates == null) {
+                    candidates = new TreeSet<Integer>();
+                }
                 candidates.add(movieID);
+                temp.put(userID, candidates);
+
             }
         }//map
 
         public void cleanup(Context context) throws IOException, InterruptedException {
-            Integer [] arr = candidates.toArray(new Integer[candidates.size()]);
-            for (int i = 0 ; i < arr.length ; i++) {
-                for (int j = 0 ; j < arr.length ; j++) {
-                    context.write(new PairKey(arr[i],arr[j]), one);
-                }//for j
 
-            }//for i
+            for (Map.Entry<Integer, SortedSet<Integer>> e : temp.entrySet()) {
+
+                SortedSet<Integer> _set = e.getValue();
+                Integer [] arr = _set.toArray(new Integer[_set.size()]);
+                for (int i = 0 ; i < arr.length ; i++) {
+                    for (int j = 0 ; j < arr.length ; j++) {
+                        context.write(new PairKey(arr[i],arr[j]), one);
+                    }//for j
+
+                }//for i
+
+
+
+
+            }
+
+
+
         }//cleanup
 
 
