@@ -1,9 +1,6 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.WritableComparable;
-import org.apache.hadoop.io.WritableComparator;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
@@ -76,7 +73,12 @@ public class MoviePairs {
 
         @Override
         public int compareTo(PairKey other) {
-            return 0;
+            int _lowCompare = lowID.compareTo(other.getLowID());
+            if (_lowCompare != 0) {
+                return _lowCompare;
+            }
+            int _highCompare = highID.compareTo(other.getHighID());
+            return _highCompare;
         }
 
         @Override
@@ -230,13 +232,38 @@ public class MoviePairs {
      */
     public static class PairReducer extends Reducer<PairKey, Iterable<IntWritable>, Text, IntWritable> {
 
+        private PairKey current;
+        private int sum;
+
         public void reduce(PairKey key, Iterable<IntWritable> vals, Context context) throws IOException, InterruptedException {
             int sum = 0;
-            for (IntWritable val : vals) {
-                sum+= val.get();
-            }//for
-            IntWritable result = new IntWritable(sum);
-            context.write(new Text(key.toString()), result);
+
+            if (current == null) {
+                current = key;
+            }
+            else {
+
+                if (current.equals(key)) {
+                    for (IntWritable val : vals) {
+                        sum+= val.get();
+                    }//for
+                }
+
+                else {
+                    IntWritable result = new IntWritable(sum);
+                    context.write(new Text(current.toString()), result);
+                    current = key;
+                    sum = 0;
+                    for (IntWritable val : vals) {
+                        sum+= val.get();
+                    }//for
+                }
+
+            }
+
+
+
+
         } //reduce
 
     }
@@ -258,9 +285,9 @@ public class MoviePairs {
 
         job.setJarByClass(MoviePairs.class);
 
-//       job.setSortComparatorClass(CompositeKeyComparator.class);
-//       job.setPartitionerClass(NaturalKeyPartitioner.class);
-//       job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
+       job.setSortComparatorClass(CompositeKeyComparator.class);
+       job.setPartitionerClass(NaturalKeyPartitioner.class);
+       job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
 
         //map-reduce classes
         job.setMapperClass(PairMapper.class);
