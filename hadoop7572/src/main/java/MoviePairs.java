@@ -1,6 +1,9 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.*;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
@@ -73,12 +76,7 @@ public class MoviePairs {
 
         @Override
         public int compareTo(PairKey other) {
-            int _lowCompare = lowID.compareTo(other.getLowID());
-            if (_lowCompare != 0) {
-                return _lowCompare;
-            }
-            int _highCompare = highID.compareTo(other.getHighID());
-            return _highCompare;
+            return 0; 
         }
 
         @Override
@@ -187,7 +185,7 @@ public class MoviePairs {
             String _rating = vals[1];
             Integer movieID = new Integer(_movieID);
             Integer rating = new Integer(_rating);
-            if (rating > 3 && null != userID) {
+            if (rating > 3) {
                 SortedSet candidates  = temp.get(userID);
                 if (candidates == null) {
                     candidates = new TreeSet<Integer>();
