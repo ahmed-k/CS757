@@ -74,7 +74,7 @@ public class MoviePairs {
      * Comparators
      */
 
-    public class CompositeKeyComparator extends WritableComparator {
+    public static class CompositeKeyComparator extends WritableComparator {
         protected CompositeKeyComparator() {
             super(PairKey.class, true);
         }
@@ -90,7 +90,7 @@ public class MoviePairs {
 
     }
 
-    public class NaturalKeyPartitioner extends Partitioner<PairKey, IntWritable> {
+    public static class NaturalKeyPartitioner extends Partitioner<PairKey, IntWritable> {
 
         public int getPartition(PairKey k, IntWritable v, int numPartitions) {
             int hash = k.getLowID().hashCode();
@@ -100,7 +100,7 @@ public class MoviePairs {
 
     }
 
-    public class NaturalKeyGroupingComparator extends WritableComparator {
+    public static class NaturalKeyGroupingComparator extends WritableComparator {
         protected NaturalKeyGroupingComparator() {
             super(PairKey.class, true);
         }
