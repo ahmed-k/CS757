@@ -180,7 +180,7 @@ public class MoviePairs {
                 Integer [] arr = _set.toArray(new Integer[_set.size()]);
                 for (int i = 0 ; i < arr.length-1 ; i++) {
                     for (int j = i+1 ; j < arr.length ; j++) {
-                        context.write(new PairKey(arr[i],arr[j], e.getKey()), one);
+                        context.write(new PairKey(arr[i],arr[j], new Integer(arr.length)), one);
                     }//for j
 
                 }//for i
