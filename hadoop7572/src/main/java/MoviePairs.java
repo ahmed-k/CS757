@@ -31,6 +31,7 @@ public class MoviePairs {
 
         private Integer lowID;
         private Integer highID;
+        private Integer userID;
 
 
         public PairKey() {
@@ -40,7 +41,7 @@ public class MoviePairs {
 
         }
 
-        public PairKey(Integer one, Integer two) {
+        public PairKey(Integer one, Integer two, Integer userID) {
             //should be impossible
             if (one.equals(two)) {
                 throw new IllegalArgumentException("Cannot have a pair key with identical IDs");
@@ -62,6 +63,8 @@ public class MoviePairs {
         public Integer getHighID() {
             return highID;
         }
+
+
 
         public void setLowID(Integer _lowID) {
             lowID = _lowID;
@@ -85,17 +88,19 @@ public class MoviePairs {
         public void write(DataOutput dataOutput) throws IOException {
             dataOutput.writeInt(lowID.intValue());
             dataOutput.writeInt(highID.intValue());
+            dataOutput.writeInt(userID.intValue());
         }
 
         @Override
         public void readFields(DataInput dataInput) throws IOException {
             lowID = new Integer(dataInput.readInt());
             highID = new Integer(dataInput.readInt());
+            userID = new Integer(dataInput.readInt());
         }
 
         @Override
         public String toString() {
-            return "<" + lowID + ", " + highID + ">";
+            return "<" + userID + ":"  + lowID + ", " + highID + ">";
         }
 
         @Override
@@ -230,40 +235,15 @@ public class MoviePairs {
     /**
      *          REDUCER
      */
-    public static class PairReducer extends Reducer<PairKey, Iterable<IntWritable>, Text, IntWritable> {
+    public static class PairReducer extends Reducer<PairKey, IntWritable, PairKey, IntWritable> {
 
-        private PairKey current;
-        private int sum;
-
+        @Override
         public void reduce(PairKey key, Iterable<IntWritable> vals, Context context) throws IOException, InterruptedException {
             int sum = 0;
-
-            if (current == null) {
-                current = key;
+            for (IntWritable val : vals) {
+                sum += val.get();
             }
-            else {
-
-                if (current.equals(key)) {
-                    for (IntWritable val : vals) {
-                        sum+= val.get();
-                    }//for
-                }
-
-                else {
-                    IntWritable result = new IntWritable(sum);
-                    context.write(new Text(current.toString()), result);
-                    current = key;
-                    sum = 0;
-                    for (IntWritable val : vals) {
-                        sum+= val.get();
-                    }//for
-                }
-
-            }
-
-
-
-
+            context.write(key, new IntWritable(sum));
         } //reduce
 
     }
@@ -285,20 +265,17 @@ public class MoviePairs {
 
         job.setJarByClass(MoviePairs.class);
 
-       job.setSortComparatorClass(CompositeKeyComparator.class);
-       job.setPartitionerClass(NaturalKeyPartitioner.class);
-       job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
-
         //map-reduce classes
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
 
+       job.setSortComparatorClass(CompositeKeyComparator.class);
+       job.setPartitionerClass(NaturalKeyPartitioner.class);
+       job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
 
         //key-val classes
-        job.setMapOutputKeyClass(PairKey.class);
-        job.setMapOutputValueClass(IntWritable.class);
-        job.setOutputKeyClass(Text.class);
+        job.setOutputKeyClass(PairKey.class);
         job.setOutputValueClass(IntWritable.class);
 
 
