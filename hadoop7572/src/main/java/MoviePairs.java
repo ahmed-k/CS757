@@ -100,13 +100,29 @@ public class MoviePairs {
 
         @Override
         public boolean equals(Object o) {
+
+            if (this == o) {
+                return true;
+            }
+            if ( o == null || this.getClass() != o.getClass()) {
+                return false;
+            }
+
+            PairKey other = (PairKey) o;
+
+            //compare fields
+            if (this.lowID != null ?    this.lowID.equals(other.getLowID()) == false  : other.getLowID() != null) return false;
+            if (this.highID != null ?   this.highID.equals(other.getHighID()) == false : other.getHighID() != null) return false;
+
             return true;
         }
 
 
         @Override
         public int hashCode() {
-            return 163;
+            int _lowHash = this.lowID.hashCode();
+            int _highHash = this.highID.hashCode();
+            return 163 * (_lowHash ) + _highHash;
         }
     }
 
@@ -123,7 +139,7 @@ public class MoviePairs {
             PairKey k1 = (PairKey) w1;
             PairKey k2 = (PairKey) w2;
 
-            int result = k1.getLowID().compareTo(k2.getLowID());
+            int result = k1.compareTo(k2);
             return result;
         }
 
@@ -244,9 +260,9 @@ public class MoviePairs {
 
         job.setJarByClass(MoviePairs.class);
 
-
-//        job.setPartitionerClass(NaturalKeyPartitioner.class);
-//        job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
+       job.setSortComparatorClass(CompositeKeyComparator.class);
+       job.setPartitionerClass(NaturalKeyPartitioner.class);
+       job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
 
         //map-reduce classes
         job.setMapperClass(PairMapper.class);
