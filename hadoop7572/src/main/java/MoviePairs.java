@@ -27,13 +27,18 @@ public class MoviePairs {
     Composite Key Object
      **/
     //first commit from here!
-    public static class PairKey implements Writable, WritableComparable<PairKey> {
+    public static class PairKey implements WritableComparable<PairKey> {
 
         private Integer lowID;
         private Integer highID;
 
 
-        public PairKey() {}
+        public PairKey() {
+
+            this.lowID = -1;
+            this.highID = -1;
+
+        }
 
         public PairKey(Integer one, Integer two) {
             //should be impossible
@@ -66,13 +71,6 @@ public class MoviePairs {
             highID = _highID;
         }
 
-
-        public static PairKey read(DataInput in) throws IOException {
-            PairKey _this = new PairKey();
-            _this.readFields(in);
-            return _this;
-        }
-
         @Override
         public int compareTo(PairKey other) {
             int _lowCompare = lowID.compareTo(other.getLowID());
@@ -102,29 +100,15 @@ public class MoviePairs {
 
         @Override
         public boolean equals(Object o) {
-
-            if (this == o) {
-                return true;
-            }
-            if ( o == null || this.getClass() != o.getClass()) {
-                return false;
-            }
-
-            PairKey other = (PairKey) o;
-
-            //compare fields
-            if (this.lowID != null ?    this.lowID.equals(other.getLowID()) == false  : other.getLowID() != null) return false;
-            if (this.highID != null ?   this.highID.equals(other.getHighID()) == false : other.getHighID() != null) return false;
-
             return true;
         }
 
 
         @Override
         public int hashCode() {
-            int _lowHash = this.lowID != null ? this.lowID.hashCode() : 0 ;
-            int _highHash = this.highID != null ? this.highID.hashCode() : 0 ;
-            return 163 * (_lowHash + _highHash);
+            int _lowHash = this.lowID.hashCode();
+            int _highHash = this.highID.hashCode();
+            return 163 * (_lowHash ) + _highHash;
         }
     }
 
