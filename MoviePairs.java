@@ -32,11 +32,11 @@ public class MoviePairs {
 
      **/
 
-    private static class PairKey implements WritableComparable {
+    public static class PairKey implements WritableComparable {
 
         private Integer lowID;
         private Integer highID;
-        private Integer userID;
+        private Integer userID =27;
 
         public PairKey() {}
 
@@ -144,7 +144,12 @@ public class MoviePairs {
      */
 
 
-    public static class PairMapper extends Mapper<Text, Text, Text, Text> {
+
+
+
+
+
+    public static class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
         private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
         private IntWritable one = new IntWritable(1);
@@ -172,27 +177,15 @@ public class MoviePairs {
             for (Map.Entry<Integer, SortedSet<Integer>> e : temp.entrySet()) {
 
                 SortedSet<Integer> _set = e.getValue();
-                /*
                 Integer [] arr = _set.toArray(new Integer[_set.size()]);
                 for (int i = 0 ; i < arr.length-1 ; i++) {
                     for (int j = i+1 ; j < arr.length ; j++) {
-                        context.write(new PairKey(arr[i],arr[j], new Integer(arr.length)), one);
+                        context.write(new PairKey(arr[i],arr[j], 44), one);
                     }//for j
 
                 }//for i
 
-                */
 
-                String val = "";
-                for (Integer i : _set) {
-                    val += i.toString()+",";
-                }
-                val+="|||";
-                Text out = new Text();
-                out.set(val);
-                Text kOut = new Text();
-                kOut.set(e.getKey().toString());
-                context.write(kOut, out);
 
 
             }
@@ -211,13 +204,28 @@ public class MoviePairs {
      */
 
 
-    public static class PairReducer extends Reducer<Text, Text, Text, Text> {
 
-        public void reduce(Text key, Text val, Context context) throws IOException, InterruptedException {
-            context.write(key, val);
+
+
+
+    public static class PairReducer extends Reducer<PairKey, Iterable<IntWritable>, Text, IntWritable> {
+
+        public void reduce(PairKey key, Iterable<IntWritable> vals, Context context) throws IOException, InterruptedException {
+
+            int sum = 0;
+
+            for (IntWritable val : vals) {
+                sum+= val.get();
+            }//for
+
+            IntWritable result = new IntWritable(sum);
+            context.write(new Text(key.toString()), result);
         } //reduce
 
     }
+
+
+
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
@@ -234,19 +242,21 @@ public class MoviePairs {
         job.setJarByClass(MoviePairs.class);
 
 
-        //job.setPartitionerClass(NaturalKeyPartitioner.class);
-        //job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
+        job.setPartitionerClass(NaturalKeyPartitioner.class);
+        job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
 
 
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
 
+        job.setMapOutputKeyClass(PairKey.class);
+        job.setMapOutputValueClass(IntWritable.class);
 
-        //job.setMapOutputKeyClass(PairKey.class);
-        //job.setMapOutputValueClass(IntWritable.class);
+        job.setMapOutputKeyClass(PairKey.class);
+        job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
 
 
         job.setInputFormatClass(KeyValueTextInputFormat.class);
