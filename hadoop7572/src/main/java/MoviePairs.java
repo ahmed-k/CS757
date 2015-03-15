@@ -255,7 +255,7 @@ public class MoviePairs {
 
 
         job.setPartitionerClass(NaturalKeyPartitioner.class);
-       // job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);*/
+        job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
 
         //map-reduce classes
         job.setMapperClass(PairMapper.class);
