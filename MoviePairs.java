@@ -134,8 +134,10 @@ public class MoviePairs {
 
 
             Text k = new Text();
-            k.set("KEY:"+key.toString());
-
+            String raw = value.toString();
+            String[] _raw = raw.split("\t");
+            k.set("<"+key.toString()+","+_raw[0]+">");
+            
             context.write(k, value);
 
 
