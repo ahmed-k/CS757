@@ -75,13 +75,18 @@ public class MoviePairs {
 
         @Override
         public int compareTo(PairKey other) {
-            return lowID.compareTo(other.getLowID());
+            int _lowCompare = lowID.compareTo(other.getLowID());
+            if (_lowCompare != 0) {
+                return _lowCompare;
+            }
+            int _highCompare = highID.compareTo(other.getHighID());
+            return _highCompare;
         }
+
         @Override
         public void write(DataOutput dataOutput) throws IOException {
             dataOutput.writeInt(lowID.intValue());
             dataOutput.writeInt(highID.intValue());
-
         }
 
         @Override
