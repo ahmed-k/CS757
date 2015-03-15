@@ -29,7 +29,9 @@ public class MoviePairs {
     /**
 
     Composite Key Object
-     */
+
+     **/
+
     private static class PairKey implements WritableComparable {
 
         private Integer lowID;
@@ -94,8 +96,8 @@ public class MoviePairs {
     }
 
     /**
-     * Comparators
-     */
+      Comparators
+     **/
 
     public static class CompositeKeyComparator extends WritableComparator {
         protected CompositeKeyComparator() {
@@ -159,7 +161,7 @@ public class MoviePairs {
             String _rating = vals[1];
             Integer movieID = new Integer(_movieID);
             Integer rating = new Integer(_rating);
-            if (rating > 3) {
+            if (rating > 3 && null != userID) {
                 SortedSet candidates  = temp.get(userID);
                 if (candidates == null) {
                     candidates = new TreeSet<Integer>();
