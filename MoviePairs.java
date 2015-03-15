@@ -33,6 +33,8 @@ public class MoviePairs {
         private Integer lowID;
         private Integer highID;
 
+        public PairKey() {}
+
         public PairKey(Integer lowID, Integer highID) {
             this.lowID = lowID;
             this.highID = highID;
