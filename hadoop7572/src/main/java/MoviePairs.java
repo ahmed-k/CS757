@@ -1,9 +1,6 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.WritableComparable;
-import org.apache.hadoop.io.WritableComparator;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
@@ -27,26 +24,22 @@ import java.util.TreeSet;
 public class MoviePairs {
 
     /**
-
     Composite Key Object
-
      **/
     //first commit from here!
-    public static class PairKey implements WritableComparable {
+    public static class PairKey implements Writable, WritableComparable<PairKey> {
 
         private Integer lowID;
         private Integer highID;
-        private Integer userID;
+
 
         public PairKey() {}
 
-        public PairKey(Integer one, Integer two, Integer userID) {
-
+        public PairKey(Integer one, Integer two) {
             //should be impossible
             if (one.equals(two)) {
                 throw new IllegalArgumentException("Cannot have a pair key with identical IDs");
             }
-
             if (one < two) {
                 lowID = one;
                 highID = two;
@@ -55,9 +48,6 @@ public class MoviePairs {
                 lowID = two;
                 highID = one;
             }
-
-            this.userID = userID;
-
         }
 
         public Integer getLowID() {
@@ -68,32 +58,67 @@ public class MoviePairs {
             return highID;
         }
 
-        @Override
-        public int compareTo(Object o) {
-            if (o==null) {
-                return 0;
-            }
-            PairKey other = (PairKey) o;
-            return (other.getLowID().compareTo(lowID));
+        public void setLowID(Integer _lowID) {
+            lowID = _lowID;
         }
 
+        public void setHighID(Integer _highID) {
+            highID = _highID;
+        }
+
+
+        public static PairKey read(DataInput in) throws IOException {
+            PairKey _this = new PairKey();
+            _this.readFields(in);
+            return _this;
+        }
+
+        @Override
+        public int compareTo(PairKey other) {
+            return lowID.compareTo(other.getLowID());
+        }
         @Override
         public void write(DataOutput dataOutput) throws IOException {
             dataOutput.writeInt(lowID.intValue());
             dataOutput.writeInt(highID.intValue());
-            dataOutput.writeInt(userID.intValue());
+
         }
 
         @Override
         public void readFields(DataInput dataInput) throws IOException {
             lowID = new Integer(dataInput.readInt());
             highID = new Integer(dataInput.readInt());
-            userID = new Integer(dataInput.readInt());
         }
 
         @Override
         public String toString() {
-            return "<"+ userID + ":" + lowID + ", " + highID + ">";
+            return "<" + lowID + ", " + highID + ">";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if ( o == null || this.getClass() != o.getClass()) {
+                return false;
+            }
+
+            PairKey other = (PairKey) o;
+
+            //compare fields
+            if (this.lowID != null ?    this.lowID.equals(other.getLowID()) == false  : other.getLowID() != null) return false;
+            if (this.highID != null ?   this.highID.equals(other.getHighID()) == false : other.getHighID() != null) return false;
+
+            return true;
+        }
+
+
+        @Override
+        public int hashCode() {
+            int _lowHash = this.lowID != null ? this.lowID.hashCode() : 0 ;
+            int _highHash = this.highID != null ? this.highID.hashCode() : 0 ;
+            return 167 * (_lowHash + _highHash);
         }
     }
 
@@ -145,12 +170,6 @@ public class MoviePairs {
      *              MAPPER
      */
 
-
-
-
-
-
-
     public static class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
         private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
@@ -182,7 +201,7 @@ public class MoviePairs {
                 Integer [] arr = _set.toArray(new Integer[_set.size()]);
                 for (int i = 0 ; i < arr.length-1 ; i++) {
                     for (int j = i+1 ; j < arr.length ; j++) {
-                        context.write(new PairKey(arr[i],arr[j], e.getKey()), one);
+                        context.write(new PairKey(arr[i],arr[j]), one);
                     }//for j
 
                 }//for i
@@ -204,22 +223,13 @@ public class MoviePairs {
     /**
      *          REDUCER
      */
-
-
-
-
-
-
     public static class PairReducer extends Reducer<PairKey, Iterable<IntWritable>, Text, IntWritable> {
 
         public void reduce(PairKey key, Iterable<IntWritable> vals, Context context) throws IOException, InterruptedException {
-
             int sum = 0;
-
             for (IntWritable val : vals) {
                 sum+= val.get();
             }//for
-
             IntWritable result = new IntWritable(sum);
             context.write(new Text(key.toString()), result);
         } //reduce
@@ -243,18 +253,17 @@ public class MoviePairs {
 
         job.setJarByClass(MoviePairs.class);
 
-
+/*
         job.setPartitionerClass(NaturalKeyPartitioner.class);
-        job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
+        job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);*/
 
-
+        //map-reduce classes
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
 
-        job.setMapOutputKeyClass(PairKey.class);
-        job.setMapOutputValueClass(IntWritable.class);
 
+        //key-val classes
         job.setMapOutputKeyClass(PairKey.class);
         job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
