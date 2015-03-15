@@ -36,7 +36,7 @@ public class MoviePairs {
 
         private Integer lowID;
         private Integer highID;
-        private Integer userID =27;
+        private Integer userID;
 
         public PairKey() {}
 
@@ -81,12 +81,14 @@ public class MoviePairs {
         public void write(DataOutput dataOutput) throws IOException {
             dataOutput.writeInt(lowID.intValue());
             dataOutput.writeInt(highID.intValue());
+            dataOutput.writeInt(userID.intValue());
         }
 
         @Override
         public void readFields(DataInput dataInput) throws IOException {
             lowID = new Integer(dataInput.readInt());
             highID = new Integer(dataInput.readInt());
+            userID = new Integer(dataInput.readInt());
         }
 
         @Override
@@ -180,7 +182,7 @@ public class MoviePairs {
                 Integer [] arr = _set.toArray(new Integer[_set.size()]);
                 for (int i = 0 ; i < arr.length-1 ; i++) {
                     for (int j = i+1 ; j < arr.length ; j++) {
-                        context.write(new PairKey(arr[i],arr[j], 44), one);
+                        context.write(new PairKey(arr[i],arr[j], e.getKey()), one);
                     }//for j
 
                 }//for i
