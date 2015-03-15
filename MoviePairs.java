@@ -16,8 +16,6 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -26,6 +24,10 @@ import java.util.TreeSet;
  */
 public class MoviePairs {
 
+    /**
+
+    Composite Key Object
+     */
     private static class PairKey implements WritableComparable {
 
         private Integer lowID;
@@ -65,6 +67,10 @@ public class MoviePairs {
             highID = new Integer(dataInput.readInt());
         }
     }
+
+    /**
+     * Comparators
+     */
 
     public class CompositeKeyComparator extends WritableComparator {
         protected CompositeKeyComparator() {
@@ -106,10 +112,13 @@ public class MoviePairs {
     }
 
 
+    /**
+     *              MAPPER
+     */
 
 
     public static class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
-        private Map<Integer, Integer> pairs = new HashMap<Integer, Integer>();
+
         private SortedSet<Integer> candidates = new TreeSet<Integer>();
         private IntWritable one = new IntWritable(1);
         public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
@@ -128,7 +137,6 @@ public class MoviePairs {
         public void cleanup(Context context) throws IOException, InterruptedException {
             Integer [] arr = candidates.toArray(new Integer[candidates.size()]);
             for (int i = 0 ; i < arr.length ; i++) {
-                Integer curr = arr[i];
                 for (int j = 0 ; j < arr.length ; j++) {
                     context.write(new PairKey(arr[i],arr[j]), one);
                 }//for j
@@ -139,6 +147,11 @@ public class MoviePairs {
 
 
     }//PairMapper
+
+
+    /**
+     *          REDUCER
+     */
 
     public static class PairReducer extends Reducer<PairKey, Iterable<IntWritable>, Text, IntWritable> {
 
@@ -162,18 +175,26 @@ public class MoviePairs {
             System.exit(2);
         }
 
+        //CONFIGURE THE JOB
         Job job = new Job(conf, "movie pairs");
+
         job.setJarByClass(MoviePairs.class);
+
         job.setPartitionerClass(NaturalKeyPartitioner.class);
         job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
+
+        job.setMapOutputKeyClass(PairKey.class);
+        job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
+
         job.setInputFormatClass(KeyValueTextInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
         FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
+
         System.exit(job.waitForCompletion(true)? 0 :1);
 
     }
