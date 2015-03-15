@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Created by Ahmed Alabdullah on 3/15/15.
@@ -36,9 +37,23 @@ public class MoviePairs {
 
         public PairKey() {}
 
-        public PairKey(Integer lowID, Integer highID) {
-            this.lowID = lowID;
-            this.highID = highID;
+        public PairKey(Integer one, Integer two) {
+
+            //should be impossible
+            if (one.equals(two)) {
+                throw new IllegalArgumentException("Cannot have a pair key with identical IDs");
+            }
+
+            if (one < two) {
+                lowID = one;
+                highID = two;
+            }
+            else {
+                lowID = two;
+                highID = one;
+            }
+
+
         }
 
         public Integer getLowID() {
@@ -125,33 +140,9 @@ public class MoviePairs {
      */
 
 
-    public static class PairMapper extends Mapper<Text, Text, Text, Text> {
-
-        private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
-        private IntWritable one = new IntWritable(1);
-
-        public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-
-
-            Text k = new Text();
-            String raw = value.toString();
-            String[] _raw = raw.split("\t");
-            k.set("<"+key.toString()+","+_raw[0]+">");
-            
-            context.write(k, value);
 
 
 
-        }//map
-
-
-
-
-
-    }//PairMapper
-
-
-    /*
 
 
     public static class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
@@ -167,7 +158,7 @@ public class MoviePairs {
             Integer movieID = new Integer(_movieID);
             Integer rating = new Integer(_rating);
             if (rating > 3) {
-                SortedSet candidates  = temp.remove(userID);
+                SortedSet candidates  = temp.get(userID);
                 if (candidates == null) {
                     candidates = new TreeSet<Integer>();
                 }
@@ -183,8 +174,8 @@ public class MoviePairs {
 
                 SortedSet<Integer> _set = e.getValue();
                 Integer [] arr = _set.toArray(new Integer[_set.size()]);
-                for (int i = 0 ; i < arr.length ; i++) {
-                    for (int j = 0 ; j < arr.length ; j++) {
+                for (int i = 0 ; i < arr.length-1 ; i++) {
+                    for (int j = i+1 ; j < arr.length ; j++) {
                         context.write(new PairKey(arr[i],arr[j]), one);
                     }//for j
 
@@ -202,22 +193,16 @@ public class MoviePairs {
 
 
     }//PairMapper
-    */
+
 
     /**
      *          REDUCER
      */
 
-    public static class PairReducer extends Reducer<Text, Text, Text, Text> {
-
-        public void reduce(Text key, Text value, Context context) throws IOException, InterruptedException {
-            context.write(key, value);
-        } //reduce
-
-    }
 
 
-    /*
+
+
 
     public static class PairReducer extends Reducer<PairKey, Iterable<IntWritable>, Text, IntWritable> {
 
@@ -235,7 +220,7 @@ public class MoviePairs {
 
     }
 
-    */
+
 
 
     public static void main(String[] args) throws Exception {
@@ -252,30 +237,23 @@ public class MoviePairs {
 
         job.setJarByClass(MoviePairs.class);
 
-        /*
+
         job.setPartitionerClass(NaturalKeyPartitioner.class);
         job.setGroupingComparatorClass(NaturalKeyGroupingComparator.class);
-        */
+
 
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
 
-
-        /*
         job.setMapOutputKeyClass(PairKey.class);
         job.setMapOutputValueClass(IntWritable.class);
-        */
 
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
-
-        /*
         job.setMapOutputKeyClass(PairKey.class);
         job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        */
+
 
         job.setInputFormatClass(KeyValueTextInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
