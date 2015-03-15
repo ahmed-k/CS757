@@ -106,9 +106,7 @@ public class MoviePairs {
 
         @Override
         public int hashCode() {
-            int _lowHash = this.lowID.hashCode();
-            int _highHash = this.highID.hashCode();
-            return 163 * (_lowHash ) + _highHash;
+            return 163;
         }
     }
 
