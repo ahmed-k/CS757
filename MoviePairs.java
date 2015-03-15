@@ -68,6 +68,11 @@ public class MoviePairs {
             lowID = new Integer(dataInput.readInt());
             highID = new Integer(dataInput.readInt());
         }
+        
+        @Override
+        public String toString() {
+            return "<" + lowID + ", " + highID + ">";
+        }
     }
 
     /**
