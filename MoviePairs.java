@@ -185,8 +185,9 @@ public class MoviePairs {
 
                 String val = "";
                 for (Integer i : _set) {
-                    val += i.toString();
+                    val += i.toString()+",";
                 }
+                val+="|||";
                 Text out = new Text();
                 out.set(val);
                 Text kOut = new Text();
@@ -240,7 +241,7 @@ public class MoviePairs {
         job.setMapperClass(PairMapper.class);
         job.setCombinerClass(PairReducer.class);
         job.setReducerClass(PairReducer.class);
-        
+
 
         //job.setMapOutputKeyClass(PairKey.class);
         //job.setMapOutputValueClass(IntWritable.class);
