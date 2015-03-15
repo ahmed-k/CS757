@@ -34,10 +34,11 @@ public class MoviePairs {
 
         private Integer lowID;
         private Integer highID;
+        private Integer userID;
 
         public PairKey() {}
 
-        public PairKey(Integer one, Integer two) {
+        public PairKey(Integer one, Integer two, Integer userID) {
 
             //should be impossible
             if (one.equals(two)) {
@@ -53,6 +54,7 @@ public class MoviePairs {
                 highID = one;
             }
 
+            this.userID = userID;
 
         }
 
@@ -87,7 +89,7 @@ public class MoviePairs {
 
         @Override
         public String toString() {
-            return "<" + lowID + ", " + highID + ">";
+            return "<"+ userID + ":" + lowID + ", " + highID + ">";
         }
     }
 
@@ -176,7 +178,7 @@ public class MoviePairs {
                 Integer [] arr = _set.toArray(new Integer[_set.size()]);
                 for (int i = 0 ; i < arr.length-1 ; i++) {
                     for (int j = i+1 ; j < arr.length ; j++) {
-                        context.write(new PairKey(arr[i],arr[j]), one);
+                        context.write(new PairKey(arr[i],arr[j], e.getKey()), one);
                     }//for j
 
                 }//for i
