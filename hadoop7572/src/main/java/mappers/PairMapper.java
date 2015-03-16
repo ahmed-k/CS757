@@ -1,7 +1,6 @@
 package mappers;
 
 import compositekeys.PairKey;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -25,9 +24,7 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
-        Configuration conf = context.getConfiguration();
-        String separator = conf.get("ahmed.separator");
-        String[] vals = value.toString().split(separator);
+        String[] vals = value.toString().split("\t");
         String _movieID = vals[0];
         String _rating = vals[1];
         Integer rating = new Integer(_rating);
