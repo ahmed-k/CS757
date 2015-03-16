@@ -19,39 +19,37 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
     private PairKey _key = new PairKey();
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-        Integer userID = new Integer(key.toString());
-        String[] vals = value.toString().split("\t");
-        if (new Double(vals[1]) >= 4) {
-            List candidates  = temp.get(userID);
-            if (candidates == null) {
-                candidates = new ArrayList<Integer>();
-            }
-            candidates.add(new Integer(vals[0]));
-            temp.put(userID, candidates);
-        }
+//        Integer userID = new Integer(key.toString());
+//        String[] vals = value.toString().split("\t");
+//        if (new Double(vals[0]) >= 4) {
+//            List candidates  = temp.get(userID);
+//            if (candidates == null) {
+//                candidates = new ArrayList<Integer>();
+//            }
+//            candidates.add(new Integer(vals[1]));
+//            temp.put(userID, candidates);
+
+        //}
+        String[] arr = key.toString().split("_");
+        _key.setLowID(new Integer(arr[0]));
+        _key.setHighID(new Integer(arr[1]));
+        context.write(_key, one);
     }//map
 
-    public void cleanup(Context context) throws IOException, InterruptedException {
-
-        for (Map.Entry<Integer, List<Integer>> e : temp.entrySet()) {
-            List<Integer> _set = e.getValue();
-            Integer [] arr = _set.toArray(new Integer[_set.size()]);
-            _set = null;
-            for (int i = 0 ; i < arr.length-1 ; i++) {
-                for (int j = i+1 ; j < arr.length ; j++) {
-                    if (arr[i]>arr[j]) {
-                        _key.setLowID(arr[j]);
-                        _key.setHighID(arr[i]);
-                    }
-                    else {
-                        _key.setLowID(arr[i]);
-                        _key.setHighID(arr[j]);
-                    }
-
-                    context.write(_key, one);
-                }//for j
-            }//for i
-        }//for Map Entries
-    }//cleanup
+//    public void cleanup(Context context) throws IOException, InterruptedException {
+//
+//        for (Map.Entry<Integer, List<Integer>> e : temp.entrySet()) {
+//            List<Integer> _set = e.getValue();
+//            Collections.sort(_set);
+//            Integer [] arr = _set.toArray(new Integer[_set.size()]);
+//            for (int i = 0 ; i < arr.length-1 ; i++) {
+//                for (int j = i+1 ; j < arr.length ; j++) {
+//                    _key.setLowID(arr[i]);
+//                    _key.setHighID(arr[j]);
+//                    context.write(_key, one);
+//                }//for j
+//            }//for i
+//        }//for Map Entries
+//    }//cleanup
 
 }//PairMapper
