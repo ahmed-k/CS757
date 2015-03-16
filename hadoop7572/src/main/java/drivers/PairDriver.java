@@ -19,6 +19,7 @@ public class PairDriver {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+        conf.set("mapred.child.java.opts","-Xmx1024m");
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
         if (otherArgs.length != 2) {
