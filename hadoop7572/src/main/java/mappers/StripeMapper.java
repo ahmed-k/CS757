@@ -1,22 +1,29 @@
 package mappers;
 
-import compositekeys.PairKey;
+/**
+ * Created by alabdullahwi on 3/16/2015.
+ */
+
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by alabdullahwi on 3/15/2015.
  */
 
-public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
+public class StripeMapper extends Mapper<Text, Text, IntWritable, MapWritable> {
 
     private Map<Integer, List<Integer>> temp = new HashMap<Integer, List<Integer>>();
     private IntWritable one = new IntWritable(1);
-    private PairKey _key = new PairKey();
+    private MapWritable val;
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
@@ -30,23 +37,25 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
             temp.put(userID, candidates);
 
         }
-
     }//map
 
     public void cleanup(Context context) throws IOException, InterruptedException {
 
         for (Map.Entry<Integer, List<Integer>> e : temp.entrySet()) {
             List<Integer> _set = e.getValue();
-            Collections.sort(_set);
             Integer [] arr = _set.toArray(new Integer[_set.size()]);
-            for (int i = 0 ; i < arr.length-1 ; i++) {
-                for (int j = i+1 ; j < arr.length ; j++) {
-                    _key.setLowID(arr[i]);
-                    _key.setHighID(arr[j]);
-                    context.write(_key, one);
+            for (int i = 0 ; i < arr.length ; i++) {
+                Map<IntWritable, IntWritable> occ = new HashMap<IntWritable, IntWritable>();
+                for (int j = 0 ; j < arr.length ; j++) {
+                    if (arr[i] != arr[j]) {
+                        occ.put(new IntWritable(arr[j]), one);
+                        }
                 }//for j
+                val.putAll(occ);
+                context.write(new IntWritable(arr[i]),val);
             }//for i
         }//for Map Entries
+
     }//cleanup
 
 }//PairMapper
