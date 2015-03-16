@@ -32,7 +32,7 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
         //}
         String[] arr = key.toString().split("_");
         _key.setLowID(new Integer(arr[0]));
-        _key.setHighID(new Integer(arr[1].split(" ")[0]));
+        _key.setHighID(new Integer(arr[1]));
         context.write(_key, one);
     }//map
 
