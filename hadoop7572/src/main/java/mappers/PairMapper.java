@@ -21,12 +21,12 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
         String[] vals = value.toString().split("\t");
-        if (new Double(vals[0]) >= 4) {
+        if (new Double(vals[1]) >= 4) {
             List candidates  = temp.get(userID);
             if (candidates == null) {
                 candidates = new ArrayList<Integer>();
             }
-            candidates.add(new Integer(vals[1]));
+            candidates.add(new Integer(vals[0]));
             temp.put(userID, candidates);
         }
     }//map
