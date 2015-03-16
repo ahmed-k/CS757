@@ -6,62 +6,50 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by alabdullahwi on 3/15/2015.
  */
-//let's see how this goes
 
 public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
-    //private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
-    private SortedSet<Integer> coll = new TreeSet<Integer>();
+    private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
     private IntWritable one = new IntWritable(1);
     private PairKey _key = new PairKey();
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
         String[] vals = value.toString().split("\t");
+        System.out.println(Arrays.toString(vals));
         String _movieID = vals[0];
         String _rating = vals[1];
         Integer rating = new Integer(_rating);
-        Integer movieID =new Integer(_movieID);
-
-
+        Integer movieID = new Integer(_movieID);
 
         if (rating > 3) {
-//            SortedSet candidates  = temp.get(userID);
-//            if (candidates == null) {
-//                candidates = new TreeSet<Integer>();
-//            }
-            coll.add(movieID);
-            //temp.put(userID, candidates);
+            SortedSet candidates  = temp.get(userID);
+            if (candidates == null) {
+                candidates = new TreeSet<Integer>();
+            }
+            candidates.add(movieID);
+            temp.put(userID, candidates);
         }
     }//map
 
     public void cleanup(Context context) throws IOException, InterruptedException {
-        Integer [] arr = coll.toArray(new Integer[coll.size()]);
-        for (int i = 0 ; i < arr.length-1 ; i++) {
-               for (int j = i+1 ; j < arr.length ; j++) {
+
+        for (Map.Entry<Integer, SortedSet<Integer>> e : temp.entrySet()) {
+            SortedSet<Integer> _set = e.getValue();
+            Integer [] arr = _set.toArray(new Integer[_set.size()]);
+            for (int i = 0 ; i < arr.length-1 ; i++) {
+                for (int j = i+1 ; j < arr.length ; j++) {
                     _key.setLowID(arr[i]);
                     _key.setHighID(arr[j]);
                     context.write(_key, one);
                 }//for j
             }//for i
-
-//        for (Map.Entry<Integer, SortedSet<Integer>> e : temp.entrySet()) {
-//            SortedSet<Integer> _set = e.getValue();
-//            Integer [] arr = _set.toArray(new Integer[_set.size()]);
-//            for (int i = 0 ; i < arr.length-1 ; i++) {
-//                for (int j = i+1 ; j < arr.length ; j++) {
-//                    _key.setLowID(arr[i]);
-//                    _key.setHighID(arr[j]);
-//                    context.write(_key, one);
-//                }//for j
-//            }//for i
-//        }//for Map Entries
+        }//for Map Entries
     }//cleanup
 
 }//PairMapper
