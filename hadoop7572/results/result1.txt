@@ -1,0 +1,13 @@
+#ASSIGNMENT 2
+##AHMED ALABDULLAH
+
+Hadoop Time For ML-100K
+//
+real    1m13.805s
+user    0m7.286s
+sys     0m0.478s
+//
+
+
+
+
