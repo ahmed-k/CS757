@@ -24,10 +24,10 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
         System.out.println(Arrays.toString(vals));
         String _movieID = vals[0];
         String _rating = vals[1];
-        Integer rating = new Integer(_rating);
+        Double rating = new Double(_rating);
         Integer movieID = new Integer(_movieID);
 
-        if (rating > 3) {
+        if (rating >= 4) {
             SortedSet candidates  = temp.get(userID);
             if (candidates == null) {
                 candidates = new TreeSet<Integer>();
