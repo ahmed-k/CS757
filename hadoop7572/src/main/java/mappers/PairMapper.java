@@ -14,33 +14,28 @@ import java.util.*;
 
 public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
-    private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
+    private Map<Integer, List<Integer>> temp = new HashMap<Integer, List<Integer>>();
     private IntWritable one = new IntWritable(1);
     private PairKey _key = new PairKey();
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
         String[] vals = value.toString().split("\t");
-        System.out.println(Arrays.toString(vals));
-        String _movieID = vals[0];
-        String _rating = vals[1];
-        Double rating = new Double(_rating);
-        Integer movieID = new Integer(_movieID);
-
-        if (rating >= 4) {
-            SortedSet candidates  = temp.get(userID);
+        if (new Double(vals[0]) >= 4) {
+            List candidates  = temp.get(userID);
             if (candidates == null) {
-                candidates = new TreeSet<Integer>();
+                candidates = new ArrayList<Integer>();
             }
-            candidates.add(movieID);
+            candidates.add(new Integer(vals[1]));
             temp.put(userID, candidates);
         }
     }//map
 
     public void cleanup(Context context) throws IOException, InterruptedException {
 
-        for (Map.Entry<Integer, SortedSet<Integer>> e : temp.entrySet()) {
-            SortedSet<Integer> _set = e.getValue();
+        for (Map.Entry<Integer, List<Integer>> e : temp.entrySet()) {
+            List<Integer> _set = e.getValue();
+            Collections.sort(_set);
             Integer [] arr = _set.toArray(new Integer[_set.size()]);
             for (int i = 0 ; i < arr.length-1 ; i++) {
                 for (int j = i+1 ; j < arr.length ; j++) {
