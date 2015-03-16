@@ -21,10 +21,21 @@ public class PairDriver {
         Configuration conf = new Configuration();
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
-        if (otherArgs.length != 2) {
-            System.err.println("Usage: moviepairs <in> <out>");
+        if (otherArgs.length != 3) {
+            System.err.println("Usage: PairDriver <in> <out> <dataset>");
             System.exit(2);
         }
+
+        String dataset = otherArgs[2];
+        String separator = null;
+
+        if (dataset.equalsIgnoreCase("100K")) {
+            separator = "\t";
+        }
+        else {
+            separator = "::";
+        }
+        conf.set("mapreduce.input.keyvaluelinerecordreader.key.value.separator", separator);
 
         //CONFIGURE THE JOB
         Job job = new Job(conf, "movie pairs");

@@ -15,6 +15,8 @@ import java.util.TreeSet;
 /**
  * Created by alabdullahwi on 3/15/2015.
  */
+//let's see how this goes
+
 public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
     private Map<Integer, SortedSet<Integer>> temp = new HashMap<Integer, SortedSet<Integer>>();
