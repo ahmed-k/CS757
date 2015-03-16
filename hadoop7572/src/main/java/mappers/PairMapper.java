@@ -35,12 +35,19 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
         for (Map.Entry<Integer, List<Integer>> e : temp.entrySet()) {
             List<Integer> _set = e.getValue();
-            Collections.sort(_set);
             Integer [] arr = _set.toArray(new Integer[_set.size()]);
+            _set = null;
             for (int i = 0 ; i < arr.length-1 ; i++) {
                 for (int j = i+1 ; j < arr.length ; j++) {
-                    _key.setLowID(arr[i]);
-                    _key.setHighID(arr[j]);
+                    if (arr[i]>arr[j]) {
+                        _key.setLowID(arr[j]);
+                        _key.setHighID(arr[i]);
+                    }
+                    else {
+                        _key.setLowID(arr[i]);
+                        _key.setHighID(arr[j]);
+                    }
+
                     context.write(_key, one);
                 }//for j
             }//for i
