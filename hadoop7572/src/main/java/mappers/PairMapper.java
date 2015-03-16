@@ -26,12 +26,12 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
         Configuration conf = context.getConfiguration();
-        String separator = conf.get("mapreduce.input.keyvaluelinerecordreader.key.value.separator");
+        String separator = conf.get("separator");
         String[] vals = value.toString().split(separator);
         String _movieID = vals[0];
         String _rating = vals[1];
-        Integer movieID = new Integer(_movieID);
         Integer rating = new Integer(_rating);
+        Integer movieID = new Integer(_movieID);
         if (rating > 3) {
             SortedSet candidates  = temp.get(userID);
             if (candidates == null) {

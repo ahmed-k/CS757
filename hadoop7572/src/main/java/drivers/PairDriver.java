@@ -36,6 +36,7 @@ public class PairDriver {
             separator = "::";
         }
         conf.set("mapreduce.input.keyvaluelinerecordreader.key.value.separator", separator);
+        conf.set("separator", separator);
 
         //CONFIGURE THE JOB
         Job job = new Job(conf, "movie pairs");
