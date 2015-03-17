@@ -28,9 +28,13 @@ public class StripeReducer extends Reducer<IntWritable, MapWritable, Text, IntWr
         }
 
         for (Map.Entry<Writable, Writable> e: masterMap.entrySet()) {
-            output.set("<" + key + ", "+ ((IntWritable) e.getKey()).toString() + ">");
-            IntWritable val = (IntWritable) e.getValue();
-            context.write(output,val);
+            IntWritable oKey = (IntWritable) e.getKey();
+            //this discounts repeats
+            if (key.get() < oKey.get()) {
+                output.set("<" + key + ", " + oKey.toString() + ">");
+                IntWritable val = (IntWritable) e.getValue();
+                context.write(output, val);
+            }
         }
 
     } //reduce
