@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 
 
-public class StripeReducer extends Reducer<IntWritable, MapWritable,  Text, IntWritable> {
+public class StripeReducer extends Reducer<IntWritable, MapWritable, Text, IntWritable> {
 
     private OccurrenceCountWritable masterMap = new OccurrenceCountWritable();
 

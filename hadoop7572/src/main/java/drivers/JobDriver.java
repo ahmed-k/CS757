@@ -32,7 +32,6 @@ public class JobDriver {
 
     private static void configureStripes(Job job) {
         job.setMapperClass(StripeMapper.class);
-        job.setCombinerClass(StripeReducer.class);
         job.setReducerClass(StripeReducer.class);
         job.setMapOutputKeyClass(IntWritable.class);
         job.setMapOutputValueClass(MapWritable.class);
