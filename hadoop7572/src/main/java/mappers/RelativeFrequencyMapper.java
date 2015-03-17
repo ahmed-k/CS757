@@ -12,7 +12,7 @@ import java.util.*;
  * Created by alabdullahwi on 3/15/2015.
  */
 
-public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
+public class RelativeFrequencyMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
     private Map<Integer, List<Integer>> temp = new HashMap<Integer, List<Integer>>();
     private IntWritable one = new IntWritable(1);
@@ -37,13 +37,20 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
 
         for (Map.Entry<Integer, List<Integer>> e : temp.entrySet()) {
             List<Integer> _set = e.getValue();
-            Collections.sort(_set);
             Integer [] arr = _set.toArray(new Integer[_set.size()]);
-            for (int i = 0 ; i < arr.length-1 ; i++) {
-                for (int j = i+1 ; j < arr.length ; j++) {
-                    _key.setLowID(arr[i]);
-                    _key.setHighID(arr[j]);
-                    context.write(_key, one);
+            for (int i = 0 ; i < arr.length ; i++) {
+                for (int j = 0 ; j < arr.length ; j++) {
+
+                    if ( i != j ) {
+                        _key.setLowID(arr[i]);
+                        _key.setHighID(arr[j]);
+                        context.write(_key, one);
+                        //contribute to the marginal (-1 being nonexistent negative movieID)
+                        _key.setHighID(-1);
+                        context.write(_key,one);
+                    }
+
+
                 }//for j
             }//for i
         }//for Map Entries

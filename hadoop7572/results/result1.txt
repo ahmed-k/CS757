@@ -20,3 +20,24 @@ sys	0m0.494s
 real	11m32.825s
 user	0m10.091s
 sys	0m0.753s
+
+
+STRIPES
+10K
+real	0m39.763s
+user	0m7.123s
+sys	0m0.511s
+
+//1M
+real	3m43.962s
+user	0m7.835s
+sys	0m0.541s
+
+//100M
+real 29m23.213s
+
+
+
+
+
+
