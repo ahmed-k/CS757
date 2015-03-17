@@ -23,7 +23,7 @@ public class StripeMapper extends Mapper<Text, Text, IntWritable, MapWritable> {
 
     private Map<Integer, List<Integer>> temp = new HashMap<Integer, List<Integer>>();
     private IntWritable one = new IntWritable(1);
-    private MapWritable val;
+    private MapWritable val = new MapWritable();
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
@@ -45,13 +45,13 @@ public class StripeMapper extends Mapper<Text, Text, IntWritable, MapWritable> {
             List<Integer> _set = e.getValue();
             Integer [] arr = _set.toArray(new Integer[_set.size()]);
             for (int i = 0 ; i < arr.length ; i++) {
-                Map<IntWritable, IntWritable> occ = new HashMap<IntWritable, IntWritable>();
+                Map<IntWritable, IntWritable> occurrences = new HashMap<IntWritable, IntWritable>();
                 for (int j = 0 ; j < arr.length ; j++) {
                     if (arr[i] != arr[j]) {
-                        occ.put(new IntWritable(arr[j]), one);
+                        occurrences.put(new IntWritable(arr[j]), one);
                         }
                 }//for j
-                val.putAll(occ);
+                val.putAll(occurrences);
                 context.write(new IntWritable(arr[i]),val);
             }//for i
         }//for Map Entries
