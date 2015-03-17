@@ -42,7 +42,7 @@ public class OccurrenceCountWritable extends MapWritable {
         for (Map.Entry<Writable, Writable> e: this.entrySet()) {
             output.set("<" + key + ", "+ ((IntWritable) e.getKey()).toString() + ">");
             IntWritable val = (IntWritable) e.getValue();
-            context.write("",val);
+            context.write(output,val);
         }
 
 
