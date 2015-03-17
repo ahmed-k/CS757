@@ -82,15 +82,6 @@ public class JobDriver {
             configureStripes(job);
         }
 
-
-        //map-reduce classes
-        job.setCombinerClass(PairReducer.class);
-        job.setReducerClass(PairReducer.class);
-
-        //key-val classes
-        job.setOutputKeyClass(PairKey.class);
-        job.setOutputValueClass(IntWritable.class);
-
         job.setInputFormatClass(KeyValueTextInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
         FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));

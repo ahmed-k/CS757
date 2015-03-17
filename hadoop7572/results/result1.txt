@@ -9,5 +9,14 @@ sys     0m0.478s
 //
 
 
+//1M
+real	2m50.993s
+user	0m7.415s
+sys	0m0.494s
+[amuhamm3@hydra ~]$
 
 
+//10M
+real	11m32.825s
+user	0m10.091s
+sys	0m0.753s
