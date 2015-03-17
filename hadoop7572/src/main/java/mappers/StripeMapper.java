@@ -28,12 +28,12 @@ public class StripeMapper extends Mapper<Text, Text, IntWritable, MapWritable> {
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
         String[] vals = value.toString().split("\t");
-        if (new Double(vals[0]) >= 4) {
+        if (new Double(vals[1]) >= 4) {
             List candidates  = temp.get(userID);
             if (candidates == null) {
                 candidates = new ArrayList<Integer>();
             }
-            candidates.add(new Integer(vals[1]));
+            candidates.add(new Integer(vals[0]));
             temp.put(userID, candidates);
 
         }
@@ -41,11 +41,11 @@ public class StripeMapper extends Mapper<Text, Text, IntWritable, MapWritable> {
 
     public void cleanup(Context context) throws IOException, InterruptedException {
 
+        Map<IntWritable, IntWritable> occurrences = new HashMap<IntWritable, IntWritable>();
         for (Map.Entry<Integer, List<Integer>> e : temp.entrySet()) {
             List<Integer> _set = e.getValue();
             Integer [] arr = _set.toArray(new Integer[_set.size()]);
             for (int i = 0 ; i < arr.length ; i++) {
-                Map<IntWritable, IntWritable> occurrences = new HashMap<IntWritable, IntWritable>();
                 for (int j = 0 ; j < arr.length ; j++) {
                     if (arr[i] != arr[j]) {
                         occurrences.put(new IntWritable(arr[j]), one);
@@ -53,6 +53,8 @@ public class StripeMapper extends Mapper<Text, Text, IntWritable, MapWritable> {
                 }//for j
                 val.putAll(occurrences);
                 context.write(new IntWritable(arr[i]),val);
+                val.clear();
+                occurrences.clear();
             }//for i
         }//for Map Entries
 
