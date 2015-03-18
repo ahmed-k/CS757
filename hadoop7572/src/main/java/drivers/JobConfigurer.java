@@ -9,10 +9,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import partitioners.PairPartitioner;
-import reducers.LiftReducer;
-import reducers.PairReducer;
-import reducers.RelativeFrequencyReducer;
-import reducers.StripeReducer;
+import reducers.*;
 
 /**
  * Created by Ahmed Alabdullah on 3/17/15.
@@ -60,9 +57,9 @@ public class JobConfigurer {
     public static void configureForSON(Job job) {
 
         job.setMapperClass(FrequentItemsetMapper.class);
-        job.setReducerClass(PairReducer.class);
+        job.setReducerClass(FrequentItemsetReducer.class);
 
-        job.setOutputKeyClass(PairKey.class);
+        job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
 
