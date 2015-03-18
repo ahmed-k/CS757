@@ -10,7 +10,7 @@ public class CombinatonItemSetTests {
 
     @Test
     public void itemsetCombinationTest() {
-        Integer[] arr =  { 1,2,3,4,5 } ;
+        Integer[] arr =  { 1,2,3,4 } ;
         List<String> out = new FrequentItemsetMapper().doCombine(arr);
         for (String el : out ) {
             System.out.println(el);
