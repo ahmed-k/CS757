@@ -37,6 +37,8 @@ sys	0m0.541s
 real 29m23.213s
 
 
+2. RELATIVE FREQUENCY
+
 
 
 

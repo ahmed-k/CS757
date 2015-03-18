@@ -20,7 +20,7 @@ public class PairKey implements WritableComparable<PairKey> {
 
     }
 
-    public PairKey(Integer one, Integer two, Integer userID) {
+    public PairKey(Integer one, Integer two) {
         //should be impossible
         if (one.equals(two)) {
             throw new IllegalArgumentException("Cannot have a pair key with identical IDs");
@@ -60,6 +60,7 @@ public class PairKey implements WritableComparable<PairKey> {
         if (_lowCompare != 0) {
             return _lowCompare;
         }
+
         int _highCompare = highID.compareTo(other.getHighID());
         return _highCompare;
     }

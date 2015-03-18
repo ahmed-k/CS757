@@ -12,6 +12,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import partitioners.RelativeFrequencyPartitioner;
 import reducers.PairReducer;
+import reducers.RelativeFrequencyReducer;
 import reducers.StripeReducer;
 
 /**
