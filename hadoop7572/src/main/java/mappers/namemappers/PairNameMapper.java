@@ -16,7 +16,7 @@ import java.util.TreeMap;
 public class PairNameMapper extends Mapper<Text, Text, Text, NullWritable> {
 
     private SortedMap<Integer, String> topTwenty = new TreeMap<Integer, String>();
-    private Map<String, String> movieDic = new HashMap<String, String>();
+    private Map<Integer, String> movieDic = new HashMap<Integer, String>();
     private Text out = new Text();
     private NullWritable _null = NullWritable.get();
     public void map(Text key, Text value, Mapper.Context context) throws IOException, InterruptedException {
@@ -26,7 +26,7 @@ public class PairNameMapper extends Mapper<Text, Text, Text, NullWritable> {
             addIfTopTwenty(_key, _val);
         }
         else if (isMovieID(_key)) {
-             movieDic.put(_key, _val);
+             movieDic.put(Integer.parseInt(_key), _val);
         }
 
     }//map
@@ -45,11 +45,11 @@ public class PairNameMapper extends Mapper<Text, Text, Text, NullWritable> {
         }
     }
 
-    private boolean isPair(String _key) {
-        return _key.matches("<^\\d+,\\d+$>");
+    public boolean isPair(String _key) {
+        return _key.matches("^<\\d+, \\d+>$");
     }
 
-    private boolean isMovieID(String _key) {
+    public boolean isMovieID(String _key) {
         return _key.matches("^\\d+$");
     }
 
