@@ -59,7 +59,7 @@ public class JobConfigurer {
 
         job.setMapperClass(PairNameMapper.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(NullWritable.class);
+        job.setOutputValueClass(IntWritable.class);
         job.setNumReduceTasks(0);
 
     }
