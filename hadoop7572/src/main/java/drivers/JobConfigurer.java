@@ -2,10 +2,8 @@ package drivers;
 
 import compositekeys.PairKey;
 import mappers.*;
-import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.MapWritable;
-import org.apache.hadoop.io.Text;
+import mappers.namemappers.PairNameMapper;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import partitioners.PairPartitioner;
@@ -24,7 +22,7 @@ public class JobConfigurer {
     private static final String RELATIVE_FREQUENCY = "rfreq";
     private static final String LIFT = "lift";
     private static final String SON = "son";
-
+    private static final String MOVIE_NAME = "name";
 
 
 
@@ -48,11 +46,23 @@ public class JobConfigurer {
         else if (SON.equalsIgnoreCase(technique)) {
             configureForSON(job);
         }
+        else if (MOVIE_NAME.equalsIgnoreCase(technique)) {
+            configureForMovieNameResolution(job);
+        }
 
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
     }
 
+
+    public static void configureForMovieNameResolution(Job job) {
+
+        job.setMapperClass(PairNameMapper.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(NullWritable.class);
+        job.setNumReduceTasks(0);
+
+    }
 
     public static void configureForSON(Job job) {
 
