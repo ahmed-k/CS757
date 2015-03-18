@@ -47,7 +47,7 @@ public class LiftReducer extends Reducer<PairKey, IntWritable, PairKey, DoubleWr
         }
         else {
             int _relative = sumUp(vals);
-            double unrounded = ((double) _relative / total.get() / lift.get());
+            double unrounded = ((double) _relative / total.get()) / ((double) _relative / lift.get());
             double rounded = Math.round(unrounded * 10.0) / 10.0;
             liftOut.set(rounded);
             context.write(key, liftOut);
