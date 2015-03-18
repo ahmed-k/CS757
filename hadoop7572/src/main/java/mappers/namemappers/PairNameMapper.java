@@ -55,7 +55,7 @@ public class PairNameMapper extends Mapper<Text, Text, Text, NullWritable> {
 
     public void cleanup(Context context) throws IOException, InterruptedException {
         for (Map.Entry<Integer, String> e : topTwenty.entrySet()) {
-            String[] pairs = e.getValue().split(",");
+            String[] pairs = e.getValue().split(", ");
             pairs[0] = pairs[0].replace("<", "");
             pairs[1] = pairs[1].replace(">","");
             out.set("<"+movieDic.get(Integer.parseInt(pairs[0]))+","+movieDic.get(Integer.parseInt(pairs[1]))+">");
