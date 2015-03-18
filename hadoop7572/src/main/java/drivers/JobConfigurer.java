@@ -26,6 +26,9 @@ public class JobConfigurer {
     private static final String STRIPE = "stripe";
     private static final String RELATIVE_FREQUENCY = "rfreq";
     private static final String LIFT = "lift";
+    private static final String SON = "son";
+
+
 
 
     public static void configureJob(String technique, String dataset, Job job) {
@@ -45,10 +48,25 @@ public class JobConfigurer {
             configureForLift(job);
         }
 
+        else if (SON.equalsIgnoreCase(technique)) {
+            configureForSON(job);
+        }
+
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
     }
 
+
+    public static void configureForSON(Job job) {
+
+        job.setMapperClass(FrequentItemsetMapper.class);
+        job.setReducerClass(PairReducer.class);
+
+        job.setOutputKeyClass(PairKey.class);
+        job.setOutputValueClass(IntWritable.class);
+
+
+    }
 
     public static void configureForRelativeFrequency(Job job) {
 

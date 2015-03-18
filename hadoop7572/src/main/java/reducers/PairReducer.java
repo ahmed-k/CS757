@@ -13,13 +13,16 @@ import java.io.IOException;
 
 public class PairReducer extends Reducer<PairKey, IntWritable, PairKey, IntWritable> {
 
+    private IntWritable sum = new IntWritable();
+
     @Override
     public void reduce(PairKey key, Iterable<IntWritable> vals, Context context) throws IOException, InterruptedException {
-        int sum = 0;
+        int _sum = 0;
         for (IntWritable val : vals) {
-            sum += val.get();
+            _sum += val.get();
         }
-        context.write(key, new IntWritable(sum));
+        sum.set(_sum);
+        context.write(key, sum);
     } //reduce
 
 }
