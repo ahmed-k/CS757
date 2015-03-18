@@ -5,6 +5,7 @@ import mappers.PairMapper;
 import mappers.PairMapperBigDataSet;
 import mappers.RelativeFrequencyMapper;
 import mappers.StripeMapper;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
@@ -55,7 +56,7 @@ public class JobConfigurer {
         job.setPartitionerClass(RelativeFrequencyPartitioner.class);
         job.setNumReduceTasks(3);
         job.setOutputKeyClass(PairKey.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(DoubleWritable.class);
 
     }
 

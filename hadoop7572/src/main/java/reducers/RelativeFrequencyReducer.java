@@ -1,6 +1,7 @@
 package reducers;
 
 import compositekeys.PairKey;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -9,11 +10,11 @@ import java.io.IOException;
 /**
  * Created by Ahmed Alabdullah on 3/18/15.
  */
-public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, PairKey, IntWritable> {
+public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, PairKey, DoubleWritable> {
 
 
-    IntWritable total = new IntWritable();
-    IntWritable relative = new IntWritable();
+    DoubleWritable total = new DoubleWritable();
+    DoubleWritable relative = new DoubleWritable();
     Integer currentKey = -1;
 
 
@@ -33,7 +34,7 @@ public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, Pair
         }
         else {
             int _relative = sumUp(vals);
-            relative.set(_relative/total.get());
+            relative.set((double) _relative/total.get());
             context.write(key, relative);
         }
 
