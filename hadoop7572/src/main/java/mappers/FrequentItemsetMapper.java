@@ -22,7 +22,7 @@ public class FrequentItemsetMapper extends Mapper<Text, Text, Text, IntWritable>
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
         String[] vals = value.toString().split("\t");
-        if (new Double(vals[1]) >= 4) {
+        if (Double.parseDouble(vals[1]) >= 4) {
             List candidates = temp.get(userID);
             if (candidates == null) {
                 candidates = new ArrayList<Integer>();
@@ -42,7 +42,6 @@ public class FrequentItemsetMapper extends Mapper<Text, Text, Text, IntWritable>
         String _key = "<";
         for (int i = 0 ; i < arr.length-1 ; i++) {
             _key += arr[i]+",";
-
             for (int j = i+1 ; j < arr.length; j++) {
                 retv.add(_key+arr[j]+">");
             }

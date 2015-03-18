@@ -21,7 +21,7 @@ public class PairMapper extends Mapper<Text, Text, PairKey, IntWritable> {
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         Integer userID = new Integer(key.toString());
         String[] vals = value.toString().split("\t");
-        if (new Double(vals[1]) >= 4) {
+        if (Double.parseDouble(vals[1]) >= 4) {
             List candidates  = temp.get(userID);
             if (candidates == null) {
                 candidates = new ArrayList<Integer>();
