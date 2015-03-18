@@ -1,17 +1,15 @@
 package drivers;
 
 import compositekeys.PairKey;
-import mappers.PairMapper;
-import mappers.PairMapperBigDataSet;
-import mappers.RelativeFrequencyMapper;
-import mappers.StripeMapper;
+import mappers.*;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
-import partitioners.RelativeFrequencyPartitioner;
+import partitioners.PairPartitioner;
+import reducers.LiftReducer;
 import reducers.PairReducer;
 import reducers.RelativeFrequencyReducer;
 import reducers.StripeReducer;
@@ -27,6 +25,7 @@ public class JobConfigurer {
     private static final String PAIR = "pair";
     private static final String STRIPE = "stripe";
     private static final String RELATIVE_FREQUENCY = "rfreq";
+    private static final String LIFT = "lift";
 
 
     public static void configureJob(String technique, String dataset, Job job) {
@@ -42,6 +41,9 @@ public class JobConfigurer {
         else if (RELATIVE_FREQUENCY.equalsIgnoreCase(technique)) {
            configureForRelativeFrequency(job);
         }
+        else if (LIFT.equalsIgnoreCase(technique)) {
+            configureForLift(job);
+        }
 
         job.setInputFormatClass(KeyValueTextInputFormat.class);
 
@@ -53,8 +55,7 @@ public class JobConfigurer {
         job.setMapperClass(RelativeFrequencyMapper.class);
         job.setReducerClass(RelativeFrequencyReducer.class);
         job.setCombinerClass(PairReducer.class);
-        job.setPartitionerClass(RelativeFrequencyPartitioner.class);
-        job.setNumReduceTasks(3);
+        job.setPartitionerClass(PairPartitioner.class);
 
         job.setMapOutputKeyClass(PairKey.class);
         job.setMapOutputValueClass(IntWritable.class);
@@ -87,6 +88,20 @@ public class JobConfigurer {
         job.setReducerClass(PairReducer.class);
         job.setOutputKeyClass(PairKey.class);
         job.setOutputValueClass(IntWritable.class);
+
+    }
+
+    public static void configureForLift(Job job) {
+
+        job.setMapperClass(LiftMapper.class);
+        job.setReducerClass(LiftReducer.class);
+        job.setCombinerClass(PairReducer.class);
+        job.setPartitionerClass(PairPartitioner.class);
+
+        job.setMapOutputKeyClass(PairKey.class);
+        job.setMapOutputValueClass(IntWritable.class);
+        job.setOutputKeyClass(PairKey.class);
+        job.setOutputValueClass(DoubleWritable.class);
 
     }
 

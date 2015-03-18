@@ -7,7 +7,7 @@ import org.apache.hadoop.mapreduce.Partitioner;
 /**
  * Created by Ahmed Alabdullah on 3/17/15.
  */
-public class RelativeFrequencyPartitioner extends Partitioner<PairKey, IntWritable> {
+public class PairPartitioner extends Partitioner<PairKey, IntWritable> {
 
 
     @Override

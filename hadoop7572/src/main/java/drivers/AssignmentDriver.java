@@ -18,7 +18,7 @@ public class AssignmentDriver {
         Configuration conf = new Configuration();
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
         if (otherArgs.length != 4) {
-            System.err.println("Usage: JobDriver <in> <out> <pair|stripe> <dataset>");
+            System.err.println("Usage: JobDriver <in> <out> <pair|stripe|rfreq|lift> <dataset>");
             System.exit(2);
         }
         String technique = otherArgs[2];
