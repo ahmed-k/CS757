@@ -55,6 +55,9 @@ public class JobConfigurer {
         job.setCombinerClass(PairReducer.class);
         job.setPartitionerClass(RelativeFrequencyPartitioner.class);
         job.setNumReduceTasks(3);
+
+        job.setMapOutputKeyClass(PairKey.class);
+        job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(PairKey.class);
         job.setOutputValueClass(DoubleWritable.class);
 
