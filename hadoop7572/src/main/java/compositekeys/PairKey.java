@@ -15,8 +15,8 @@ public class PairKey implements WritableComparable<PairKey> {
 
     public PairKey() {
 
-        this.lowID = -1;
-        this.highID = -1;
+        this.lowID  = null;
+        this.highID = null;
 
     }
 

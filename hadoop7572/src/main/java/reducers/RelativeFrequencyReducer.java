@@ -27,6 +27,7 @@ public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, Pair
             }
             else {
                 currentKey = key.getLowID();
+                total.set(0);
                 total.set(sumUp(vals));
             }
         }
@@ -40,7 +41,7 @@ public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, Pair
     } //reduce
 
 
-    private Integer sumUp(Iterable<IntWritable> vals) {
+    private int sumUp(Iterable<IntWritable> vals) {
         int retv = 0;
         for (IntWritable val:vals) {
             retv += val.get();
