@@ -58,7 +58,7 @@ public class PairNameMapper extends Mapper<Text, Text, Text, NullWritable> {
             String[] pairs = e.getValue().split(",");
             pairs[0] = pairs[0].replace("<", "");
             pairs[1] = pairs[1].replace(">","");
-            out.set("<"+movieDic.get(pairs[0]+","+movieDic.get(pairs[1])+">"));
+            out.set("<"+movieDic.get(Integer.parseInt(pairs[0]))+","+movieDic.get(Integer.parseInt(pairs[1]))+">");
             context.write(out, _null);
         }//for Map Entries
     }//cleanup
