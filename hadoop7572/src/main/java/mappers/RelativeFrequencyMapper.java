@@ -41,7 +41,7 @@ public class RelativeFrequencyMapper extends Mapper<Text, Text, PairKey, IntWrit
             for (int i = 0 ; i < arr.length ; i++) {
                 for (int j = 0 ; j < arr.length ; j++) {
 
-                    if ( i < j ) {
+                    if ( arr[i] < arr[j] ) {
                         _key.setLowID(arr[i]);
                         _key.setHighID(arr[j]);
                         context.write(_key, one);
