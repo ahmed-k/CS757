@@ -46,7 +46,8 @@ public class FrequentItemsetMapper extends Mapper<Text, Text, PairKey, IntWritab
                     if (arr[i] < arr[j]) {
                         _key.setLowID(arr[i]);
                         _key.setHighID(arr[j]);
-                        int _support = supportMap.get(_key);
+                        Integer _support = supportMap.get(_key);
+                        if (_support == null) { _support = 0; }
                         if (_support > SUPPORT_THRESHOLD) {
                             context.write(_key, one);
                         }
