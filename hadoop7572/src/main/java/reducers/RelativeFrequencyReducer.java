@@ -34,8 +34,9 @@ public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, Pair
             }
         }
         else {
-            int _relative = sumUp(vals);
-            rfreq =(double) _relative/total.get();
+            double _relative = sumUp(vals);
+            double unrounded = ( _relative / total.get());
+            rfreq = Math.round(unrounded * 10.0) / 10.0;
             if (rfreq > 0.8) {
                 relative.set(rfreq);
                 context.write(key, relative);
@@ -48,10 +49,10 @@ public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, Pair
     } //reduce
 
 
-    private int sumUp(Iterable<IntWritable> vals) {
-        int retv = 0;
+    private double sumUp(Iterable<IntWritable> vals) {
+        double retv = 0;
         for (IntWritable val:vals) {
-            retv += val.get();
+            retv += (double) val.get();
         }
         return retv;
     }

@@ -37,7 +37,7 @@ public class LiftReducer extends Reducer<PairKey, IntWritable, PairKey, DoubleWr
         //marginal key
         else if (key.getHighID() == -1)  {
             if (key.getLowID() == currentKey) {
-                total.set(total.get() + sumUp(vals));
+                total.set(total.get() + (double) sumUp(vals));
             }
             else {
                 currentKey = key.getLowID();
@@ -46,21 +46,26 @@ public class LiftReducer extends Reducer<PairKey, IntWritable, PairKey, DoubleWr
             }
         }
         else {
-            int _relative = sumUp(vals);
-            double unrounded = ((double) _relative / total.get()) / ((double) _relative / lift.get());
+            double _relative = sumUp(vals);
+            double unrounded = (_relative / total.get()) / ((_relative / lift.get()));
             double rounded = Math.round(unrounded * 10.0) / 10.0;
-            liftOut.set(rounded);
-            context.write(key, liftOut);
+
+            if (rounded > 1.5) {
+                liftOut.set(rounded);
+                context.write(key, liftOut);
+            }
+
+
         }
 
 
     } //reduce
 
 
-    private int sumUp(Iterable<IntWritable> vals) {
-        int retv = 0;
+    private double sumUp(Iterable<IntWritable> vals) {
+        double retv = 0;
         for (IntWritable val:vals) {
-            retv += val.get();
+            retv += (double) val.get();
         }
         return retv;
     }

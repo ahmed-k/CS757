@@ -36,8 +36,97 @@ sys	0m0.541s
 //100M
 real 29m23.213s
 
+TOP 20 (10K dataset):
+
+<Raiders Of The Lost Ark (1981), Indiana Jones and the Last Crusade (1989)>     196
+<Star Wars (1977), Indiana Jones and the Last Crusade (1989)>   204
+<Silence of the Lambs, The (1991), Fargo (1996)>        205
+<Fugitive, The (1993), Raiders Of The Lost Ark (1981)>  206
+<Pulp Fiction (1994), Silence of the Lambs, The (1991)> 207
+<Star Wars (1977), Contact (1997)>      208
+<Star Wars (1977), Princess Bride, The (1987)>  209
+<Star Wars (1977), Fugitive, The (1993)>        215
+<Star Wars (1977), Pulp Fiction (1994)> 217
+<Fargo (1996), Godfather, The (1972)>   218
+<Empire Strikes Back, The (1980), Return of the Jedi (1983)>    226
+<Raiders Of The Lost Ark (1981), Return of the Jedi (1983)>     231
+<Empire Strikes Back, The (1980), Raiders Of The Lost Ark (1981)>       240
+<Toy Story (1995), Star Wars (1977)>    247
+<Star Wars (1977), Silence of the Lambs, The (1991)>    256
+<Star Wars (1977), Godfather, The (1972)>       266
+<Star Wars (1977), Fargo (1996)>        267
+<Star Wars (1977), Empire Strikes Back, The (1980)>     274
+<Star Wars (1977), Raiders Of The Lost Ark (1981)>      293
+<Star Wars (1977), Return of the Jedi (1983)>   349
+
+
 
 2. RELATIVE FREQUENCY
+
+Exceeding 0.8:
+<Substance of Fire, The (1996), Tin Men (1987)>
+<Jupiter's Wife (1994), Escape to Witch Mountain (1975)>
+<War Room, The (1993), Nelly & Monsieur Arnaud (1995)>
+<Kissed (1996), Barbarella (1968)>
+<King of the Hill (1993), Night Falls on Manhattan (1997)>
+<Madonna: Truth or Dare (1991), Love Affair (1994)>
+<Old Lady Who Walked in the Sea, The (Vieille qui marchait dans la mer, La) (1991), Out to Sea (1997)>
+<Total Eclipse (1995), Run of the Country, The (1995)>
+<Color of Night (1994), Denise Calls Up (1995)>
+<Wild America (1997), Gang Related (1997)>
+<'Til There Was You (1997), Stripes (1981)>
+<Stripes (1981), Gate of Heavenly Peace, The (1995)>
+<New York Cop (1996), Delta of Venus (1994)>
+<Journey of August King, The (1995), Bhaji on the Beach (1993)>
+<Ballad of Narayama, The (Narayama Bushiko) (1958), Cement Garden, The (1993)>
+<Infinity (1996), For the Moment (1994)>
+<Losing Chase (1996), Children of the Revolution (1996)>
+<Tetsuo II: Body Hammer (1992), Romper Stomper (1992)>
+<Gabbeh (1996), Legal Deceit (1997)>
+<Locusts, The (1997), Sliding Doors (1998)>
+<Hurricane Streets (1998), Legal Deceit (1997)>
+<Anna (1996), SubUrbia (1997)>
+<Caro Diario (Dear Diary) (1994), Withnail and I (1987)>
+<Sliding Doors (1998), Legal Deceit (1997)>
+<8 Seconds (1994), Losing Isaiah (1995)>
+<Damsel in Distress, A (1937), Boys, Les (1997)>
+<Herbie Rides Again (1974), Gold Diggers: The Secret of Bear Mountain (1995)>
+<Bewegte Mann, Der (1994), Duoluo tianshi (1995)>
+<Losing Isaiah (1995), New Jersey Drive (1995)>
+<Underground (1995), Secret Adventures of Tom Thumb, The (1993)>
+<Amazing Panda Adventure, The (1995), Everest (1998)>
+<Show, The (1995), He Walked by Night (1948)>
+<Sixth Man, The (1997), Angel Baby (1995)>
+<Butcher Boy, The (1998), Spanish Prisoner, The (1997)>
+<Rough Magic (1995), 8 Heads in a Duffel Bag (1997)>
+
+
+
+10K :
+
+real    1m7.323s
+user    0m7.472s
+sys     0m0.556s
+
+
+1M:
+NEVER CRASHED.
+NEVER COMPLETED.
+
+10M:
+CRASHED: GC OVERHEAD MEMORY ERRORS.
+
+LIFT:
+10K :
+real    1m29.075s
+user    0m8.136s
+sys     0m0.608s
+
+
+
+
+
+
 
 
 
