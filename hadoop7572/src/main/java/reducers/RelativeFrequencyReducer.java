@@ -14,6 +14,7 @@ public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, Pair
 
 
     DoubleWritable total = new DoubleWritable();
+    private double rfreq = 0;
     DoubleWritable relative = new DoubleWritable();
     Integer currentKey = -1;
 
@@ -34,8 +35,13 @@ public class RelativeFrequencyReducer extends Reducer<PairKey, IntWritable, Pair
         }
         else {
             int _relative = sumUp(vals);
-            relative.set((double) _relative/total.get());
-            context.write(key, relative);
+            rfreq =(double) _relative/total.get();
+            if (rfreq > 0.8) {
+                relative.set(rfreq);
+                context.write(key, relative);
+            }
+
+
         }
 
 
