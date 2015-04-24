@@ -1,5 +1,6 @@
 package drivers;
 
+import customkeys.MatrixWritable;
 import mappers.BatchGradientDescent;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -40,6 +41,8 @@ public class AssignmentDriver {
         job.setInputFormatClass(KeyValueTextInputFormat.class);
         job.setMapperClass(BatchGradientDescent.BGDMapper.class);
         job.setReducerClass(BatchGradientDescent.BGDReducer.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(MatrixWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
         return job;

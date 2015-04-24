@@ -1,5 +1,6 @@
 package mappers;
-import org.apache.hadoop.io.IntWritable;
+
+import customkeys.MatrixWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -11,14 +12,15 @@ import java.io.IOException;
  */
 
 public class BatchGradientDescent {
-    static int d;
-    static int m;
-    static int n;
-    static double[][] V;
-    static double[][] U;
 
-    public static class BGDMapper extends Mapper<Text, Text, Text, Text> {
+    public static class BGDMapper extends Mapper<Text, Text, Text, MatrixWritable> {
 
+        static int d;
+        static int m;
+        static int n;
+        static double[][] V;
+        static double[][] U;
+        static double[][] O;
         static int row;
         static int col;
         static double val;
@@ -31,6 +33,7 @@ public class BatchGradientDescent {
             n = Integer.valueOf(context.getConfiguration().get("n"));
             V = new double[d][n];
             U = new double[m][d];
+            O = new double[m][n];
         }
 
         public void map(Text _key, Text _value, Mapper.Context context) throws IOException, InterruptedException {
@@ -49,36 +52,52 @@ public class BatchGradientDescent {
             else if ("U".equals(matrixID)) {
                 U[row][col] = val;
             }
-
-            //original matrix row, need to populate to all reducers of U cells in the same row and all V cell reducers in the same column of this cell
             else {
-                valOut.set("O\t"+row+"\t"+col+"\t"+val);
-                for (int i = 0; i<m; i++) {
-                    keyOut.set("V\t"+row+"\t"+i);
-                    context.write(keyOut,valOut);
-                }
-                for (int j =0; j<n; j++) {
-                    keyOut.set("U\t"+j+"\t"+col);
-                    context.write(keyOut,valOut);
-                }
+                O[row][col] = val;
             }
         }//map
+
+
+        public void cleanup(Context context) throws IOException, InterruptedException {
+
+            //propagate U and V cells to all concerned parties
+            MatrixWritable _U = new MatrixWritable("U", U);
+            MatrixWritable _V = new MatrixWritable("U", V);
+            MatrixWritable _O = new MatrixWritable("O", O);
+
+            //send U keys
+            for (int r =0 ; r< m ; r++) {
+                for ( int s = 0 ; s < d ; s++){
+                    keyOut.set("U"+"\t"+r+"\t"+s);
+                    context.write(keyOut, _V);
+                    context.write(keyOut, _U.row(r));
+                    context.write(keyOut, _O.row(r));
+                }
+            }
+            //send V keys
+            for (int r = 0 ; r < d; r++) {
+                for ( int s = 0 ; s < n ; s++ ) {
+                    keyOut.set("V"+"\t"+r+"\t"+s);
+                    context.write(keyOut, _U);
+                    context.write(keyOut, _V.col(r));
+                    context.write(keyOut, _O.col(r));
+                }
+            }
+        }
     }
 
-    public static class BGDReducer extends Reducer<Text, Text, Text, Text> {
+    public static class BGDReducer extends Reducer<Text, MatrixWritable, Text, Text> {
 
         static Text keyOut;
         static Text valOut;
 
-        public void reduce (Text _key, Iterable<Text> _vals, Context context) throws IOException, InterruptedException {
+        public void reduce (Text _key, Iterable<MatrixWritable> _vals, Context context) throws IOException, InterruptedException {
             String[] key = _key.toString().split("\t");
             String matrixId = key[0];
             int cellRow = Integer.valueOf(key[1]);
             int cellCol = Integer.valueOf(key[2]);
-            if ("U".equals(matrixId)) {
-               double[] originalMatrixVector = new double[m];
-                for (Text _val: _vals) {
-                   String[] vals = _val.toString().split("\t");
+/*            if ("U".equals(matrixId)) {
+                for (MatrixWritable _val: _vals) {
                     int vCol = Integer.valueOf(vals[2]);
                     double vVal = Double.valueOf(vals[3]);
                     originalMatrixVector[vCol] = vVal;
@@ -91,41 +110,62 @@ public class BatchGradientDescent {
                     int vRow = Integer.valueOf(vals[1]);
                     double vVal = Double.valueOf(vals[3]);
                     originalMatrixVector[vRow] = vVal;
-                }
-                double calculationResult = calculate(matrixId,cellRow,cellCol, originalMatrixVector);
+                }*/
+                double calculationResult = calculate(matrixId,cellRow,cellCol, _vals);
                 assert calculationResult > -1;
                 keyOut.set(cellRow+"\t"+cellCol+"\t"+calculationResult);
                 valOut.set(matrixId);
                 context.write(keyOut, valOut);
-            }
         }  //reduce
 
        //assume MatrixId is only U for now
-        public double calculate(String matrixId, int cellRow, int cellCol, double[] originalMatrixVector) {
+        public double calculate(String matrixId, int cellRow, int cellCol, Iterable<MatrixWritable> matrices) {
+
+            MatrixWritable O = null;
+            MatrixWritable V = null;
+            MatrixWritable U = null;
+
+            for (MatrixWritable matrix : matrices) {
+                String _matrixId = matrix.getId();
+                if ("U".equals(_matrixId)) {
+                    U = matrix;
+                }
+                else if  ("V".equals(_matrixId)) {
+                    V = matrix;
+                }
+                else if ("O".equals(_matrixId)) {
+                    O = matrix;
+                }
+            }
+
             double denominator = 0;
             double numerator   = 0;
 
             if ("U".equals(matrixId)) {
+                double[][] v = V.getMatrix();
+                double[] uRow = U.getMatrix()[0];
+                double[] oRow = O.getMatrix()[0];
+
                 //first calculate denominator
-                for (double _vsj : V[cellCol]){
-                    //there exists a rating
-                    if (originalMatrixVector[cellCol] != 0) {
-                        denominator += _vsj*_vsj;
+                for (int i = 0 ; i < v[cellRow].length ; i++) {
+                    if (oRow[cellCol] != 0 ) {
+                        denominator += v[cellRow][i] * v[cellRow][i] ;
                     }
                 }
+
                 //now calculate the summation at the numerator
                 double kSum = 0;
-                for (int j=0 ; j < n ; j++ ) {
-                    if (originalMatrixVector[j] != 0) {
-                        for (int k = 0; k < d; k++) {
+                for (int j=0 ; j < oRow.length ; j++ ) {
+                    if (oRow[j] != 0) {
+                        for (int k = 0; k < uRow.length; k++) {
                             if (k != cellRow) {
-                                double matrixVal = U[cellRow][k];
-                                double otherMatrixVal = V[k][j];
+                                double matrixVal = uRow[k];
+                                double otherMatrixVal = v[k][j];
                                 double cellProduct = matrixVal * otherMatrixVal;
                                 kSum += cellProduct;
                             }
                         }
-                        double Mrj = originalMatrixVector[j];
+                        double Mrj = oRow[j];
                         numerator += Mrj - kSum;
                     }
                 }
@@ -133,22 +173,25 @@ public class BatchGradientDescent {
             }
             else if ("V".equals(matrixId))
              {
+                 double[][] u =  U.getMatrix();
+                 double[] vCol = V.getMatrix()[0];
+                 double[] oCol = O.getMatrix()[0];
                 //first calculate denominator
-                 for (int i = 0 ; i < m ; i++) {
-                     if (originalMatrixVector[i] != 0 ) {
-                         denominator += U[i][cellRow] * U[i][cellRow];
+                 for (int i = 0 ; i < oCol.length ; i++) {
+                     if (oCol[i] != 0 ) {
+                         denominator += u[i][cellRow] * u[i][cellRow];
                      }
                  }
                 //now calculate the summation at the numerator
                 double kSum = 0;
-                for (int i=0 ; i < m ; i++ ) {
-                    if (originalMatrixVector[i] != 0) {
-                        for (int k = 0; k < d; k++) {
+                for (int i=0 ; i < oCol.length ; i++ ) {
+                    if (oCol[i] != 0) {
+                        for (int k = 0; k < vCol.length; k++) {
                             if (k != cellRow) {
-                                kSum += V[i][k] * V[k][cellCol];
+                                kSum += u[i][k] * u[k][cellCol];
                             }
                         }
-                        numerator += originalMatrixVector[cellRow] - kSum;
+                        numerator += oCol[cellRow] - kSum;
                     }
                 }
                 return numerator/denominator;

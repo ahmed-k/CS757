@@ -54,7 +54,6 @@ public class PairKey implements WritableComparable<PairKey> {
     }
 
 
-    @Override
     public int compareTo(PairKey other) {
         int _lowCompare = lowID.compareTo(other.getLowID());
         if (_lowCompare != 0) {
@@ -65,13 +64,11 @@ public class PairKey implements WritableComparable<PairKey> {
         return _highCompare;
     }
 
-    @Override
     public void write(DataOutput dataOutput) throws IOException {
         dataOutput.writeInt(lowID.intValue());
         dataOutput.writeInt(highID.intValue());
     }
 
-    @Override
     public void readFields(DataInput dataInput) throws IOException {
         lowID = new Integer(dataInput.readInt());
         highID = new Integer(dataInput.readInt());
