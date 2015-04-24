@@ -17,7 +17,7 @@ public class BatchGradientDescent {
     static double[][] V;
     static double[][] U;
 
-    public static class BGDMapper extends Mapper<IntWritable, Text, Text, Text> {
+    public static class BGDMapper extends Mapper<Text, Text, Text, Text> {
 
         static int row;
         static int col;
@@ -33,13 +33,14 @@ public class BatchGradientDescent {
             U = new double[m][d];
         }
 
-        public void map(IntWritable _key, Text _value, Mapper.Context context) throws IOException, InterruptedException {
+        public void map(Text _key, Text _value, Mapper.Context context) throws IOException, InterruptedException {
 
             String[] value  = _value.toString().split("\t");
-            String matrixID = value[3];
+
+            String matrixID = value[2];
             row      = Integer.valueOf(value[0]);
-            col      = Integer.valueOf(value[1]);
-            val      = Double.valueOf(value[2]);
+            col      = Integer.valueOf(_key.toString());
+            val      = Double.valueOf(value[1]);
 
             //populate U and V models
             if ("V".equals(matrixID)) {
