@@ -1,9 +1,8 @@
 package drivers;
 
-import mappers.MatrixMultiplier;
+import mappers.BatchGradientDescent;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -39,10 +38,10 @@ public class AssignmentDriver {
         Job job = new Job(conf, "batch gradient descent");
         job.setJarByClass(AssignmentDriver.class);
         job.setInputFormatClass(KeyValueTextInputFormat.class);
-        job.setMapperClass(MatrixMultiplier.MatrixMultiplierMapper.class);
-        job.setReducerClass(MatrixMultiplier.MatrixMultiplierReducer.class);
+        job.setMapperClass(BatchGradientDescent.BGDMapper.class);
+        job.setReducerClass(BatchGradientDescent.BGDReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
+        job.setOutputValueClass(Text.class);
         return job;
     }
 
