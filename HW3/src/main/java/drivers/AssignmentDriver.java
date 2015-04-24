@@ -18,14 +18,14 @@ public class AssignmentDriver {
 
     public static void main(String[] args) throws Exception {
         //get args
-        String UDim = args[2];
-        String VDim = args[3];
-        String intDim = args[4];
+        String u = args[2];
+        String v = args[3];
+        String d = args[4];
         //prepare job config object
         Configuration conf = new Configuration();
-        conf.set("UDim", UDim);
-        conf.set("VDim", VDim);
-        conf.set("intDim", intDim);
+        conf.set("u", u);
+        conf.set("V", v);
+        conf.set("d", d);
         //create job from config object
         Job job = configureJob(conf);
         //set input and output paths then exit
