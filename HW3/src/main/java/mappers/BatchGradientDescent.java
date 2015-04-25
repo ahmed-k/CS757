@@ -88,8 +88,8 @@ public class BatchGradientDescent {
 
     public static class BGDReducer extends Reducer<Text, MatrixWritable, Text, Text> {
 
-        static Text keyOut;
-        static Text valOut;
+        static Text keyOut = new Text();
+        static Text valOut = new Text();
 
         public void reduce (Text _key, Iterable<MatrixWritable> _vals, Context context) throws IOException, InterruptedException {
             String[] key = _key.toString().split("\t");
