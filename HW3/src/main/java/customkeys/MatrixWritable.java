@@ -80,13 +80,19 @@ public class MatrixWritable implements WritableComparable<MatrixWritable> {
 
     @Override
     public String toString() {
-        String retv = "";
+        String retv = "mx"+ id + "\t ";
+        for (int  k = 0; k < matrix[0].length ; k++) {
+            retv += (k+"\t");
+        }
+        retv +="\n";
         for (int i = 0 ; i < matrix.length ; i++ ) {
+            retv += (i +"\t");
             for (int j = 0 ; j < matrix[i].length ; j++ ) {
-                retv += " " +  matrix[i][j] +  " " ;
+                retv += matrix[i][j] + "\t";
             }
             retv+="\n";
         }
+        retv+="\n";
         return retv;
     }
 

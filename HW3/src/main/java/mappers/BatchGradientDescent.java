@@ -31,9 +31,6 @@ public class BatchGradientDescent {
             d = Integer.valueOf(context.getConfiguration().get("d"));
             m = Integer.valueOf(context.getConfiguration().get("m"));
             n = Integer.valueOf(context.getConfiguration().get("n"));
-            U = new double[m][d];
-            V = new double[d][n];
-            O = new double[m][n];
         }
 
         public void map(Text _key, Text _value, Mapper.Context context) throws IOException, InterruptedException {
@@ -47,13 +44,22 @@ public class BatchGradientDescent {
 
             //populate U and V models
             if ("V".equals(matrixID)) {
-                V[row-1][col-1] = val;
+                if (V == null) {
+                    V = new double [d][n];
+                    V[row-1][col-1] = val;
+                }
             }
             else if ("U".equals(matrixID)) {
-                U[row-1][col-1] = val;
+                if (U == null) {
+                    U = new double[m][d];
+                    U[row-1][col-1] = val;
+                }
             }
             else {
-                O[row-1][col-1] = val;
+                if (O == null) {
+                    O = new double[m][n];
+                    O[row-1][col-1] = val;
+                }
             }
         }//map
 
@@ -61,26 +67,38 @@ public class BatchGradientDescent {
         public void cleanup(Context context) throws IOException, InterruptedException {
 
             //propagate U and V cells to all concerned parties
-            MatrixWritable _U = new MatrixWritable("U", U);
-            MatrixWritable _V = new MatrixWritable("V", V);
-            MatrixWritable _O = new MatrixWritable("O", O);
+            MatrixWritable _U = (U == null) ? null :  new MatrixWritable("U", U);
+            MatrixWritable _V = (V == null) ? null :  new MatrixWritable("V", V);
+            MatrixWritable _O = (O == null) ? null :  new MatrixWritable("O", O);
 
             //send U keys
             for (int r =0 ; r< m ; r++) {
                 for ( int s = 0 ; s < d ; s++){
                     keyOut.set("U"+"\t"+r+"\t"+s);
-                    context.write(keyOut, _V);
-                    context.write(keyOut, _U.row(r));
-                    context.write(keyOut, _O.row(r));
+                    if (V != null) {
+                        context.write(keyOut, _V);
+                    }
+                    if (U != null) {
+                        context.write(keyOut, _U.row(r));
+                    }
+                    if ( O!= null) {
+                        context.write(keyOut, _O.row(r));
+                    }
                 }
             }
             //send V keys
             for (int r = 0 ; r < d; r++) {
                 for ( int s = 0 ; s < n ; s++ ) {
                     keyOut.set("V"+"\t"+r+"\t"+s);
-                    context.write(keyOut, _U);
-                    context.write(keyOut, _V.col(r));
-                    context.write(keyOut, _O.col(r));
+                    if (U != null) {
+                        context.write(keyOut, _U);
+                    }
+                    if (V != null) {
+                        context.write(keyOut, _V.col(r));
+                    }
+                    if ( O != null) {
+                        context.write(keyOut, _O.col(r));
+                    }
                 }
             }
         }
@@ -111,10 +129,17 @@ public class BatchGradientDescent {
                     double vVal = Double.valueOf(vals[3]);
                     originalMatrixVector[vRow] = vVal;
                 }*/
-                double calculationResult = calculate(matrixId,cellRow,cellCol, _vals);
-                assert calculationResult > -1;
-                keyOut.set(cellRow+"\t"+cellCol+"\t"+calculationResult);
-                valOut.set(matrixId);
+/*                double calculationResult = calculate(matrixId,cellRow,cellCol, _vals);
+                assert calculationResult > -1;*/
+            String valout = "";
+            for (MatrixWritable matrix : _vals) {
+                valout += matrix.toString();
+
+            }
+/*                keyOut.set(cellRow+"\t"+cellCol+"\t"+calculationResult);
+                valOut.set(matrixId);*/
+            keyOut.set("KEY:"+_key.toString()+"\n");
+            valOut.set(valout);
                 context.write(keyOut, valOut);
         }  //reduce
 
