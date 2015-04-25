@@ -1,7 +1,7 @@
 package drivers;
 
 import customkeys.MatrixWritable;
-import mappers.BatchGradientDescent;
+import mapreducers.BatchGradientDescent;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -32,7 +32,28 @@ public class AssignmentDriver {
         //set input and output paths then exit
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        if(job.waitForCompletion(true)) {
+
+            Job job2 = createIterationJob();
+            if(job2.waitForCompletion(true)) {
+/*                //Job job3 = createCollapseJob();
+                if (job3.waitForCompletion(true)) {
+
+                }*/
+
+            }
+
+
+        }
+
         System.exit(job.waitForCompletion(true)? 0 :1);
+    }
+
+    public static Job createIterationJob() throws IOException {
+        Configuration conf = new Configuration();
+        Job job = new Job(conf, "iteration determination");
+        return job;
     }
 
     public static Job configureJob(Configuration conf ) throws IOException {

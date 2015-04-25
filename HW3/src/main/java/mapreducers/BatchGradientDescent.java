@@ -1,4 +1,4 @@
-package mappers;
+package mapreducers;
 
 import customkeys.MatrixWritable;
 import org.apache.hadoop.io.Text;
