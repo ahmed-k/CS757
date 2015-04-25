@@ -195,10 +195,7 @@ public class BatchGradientDescent {
                         for (int k = 0; k < uRow.length; k++) {
                             if (k != cellCol) {
                                 try {
-                                    double matrixVal = uRow[k];
-                                    double otherMatrixVal = v[k][j];
-                                    double cellProduct = matrixVal * otherMatrixVal;
-                                    kSum += cellProduct;
+                                    kSum += uRow[k] * v[k][j];
                                 }
                                 catch(ArrayIndexOutOfBoundsException arx) {
                                     throw new ArrayIndexOutOfBoundsException("MatrixID: "+ matrixId +
@@ -211,8 +208,7 @@ public class BatchGradientDescent {
                                 }
                             }
                         }
-                        double Mrj = oRow[j];
-                        numerator += v[cellCol][j] * (Mrj - kSum);
+                        numerator += v[cellCol][j] * (oRow[j] - kSum);
                     }
                 }
                 return numerator/denominator;
@@ -234,10 +230,10 @@ public class BatchGradientDescent {
                     if (oCol[i] != 0) {
                         for (int k = 0; k < vCol.length; k++) {
                             if (k != cellRow) {
-                                kSum += u[i][k] * u[k][cellCol];
+                                kSum += u[i][k] * vCol[k];
                             }
                         }
-                        numerator += oCol[cellRow] - kSum;
+                        numerator += u[i][cellRow] * (oCol[i] - kSum);
                     }
                 }
                 return numerator/denominator;
