@@ -19,13 +19,13 @@ public class AssignmentDriver {
 
     public static void main(String[] args) throws Exception {
         //get args
-        String u = args[2];
-        String v = args[3];
+        String m = args[2];
+        String n = args[3];
         String d = args[4];
         //prepare job config object
         Configuration conf = new Configuration();
-        conf.set("u", u);
-        conf.set("V", v);
+        conf.set("m", m);
+        conf.set("n", n);
         conf.set("d", d);
         //create job from config object
         Job job = configureJob(conf);
