@@ -47,13 +47,13 @@ public class BatchGradientDescent {
 
             //populate U and V models
             if ("V".equals(matrixID)) {
-                V[row][col] = val;
+                V[row-1][col-1] = val;
             }
             else if ("U".equals(matrixID)) {
-                U[row][col] = val;
+                U[row-1][col-1] = val;
             }
             else {
-                O[row][col] = val;
+                O[row-1][col-1] = val;
             }
         }//map
 
