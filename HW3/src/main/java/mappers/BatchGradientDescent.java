@@ -116,7 +116,7 @@ public class BatchGradientDescent {
             int cellCol = Integer.valueOf(key[2]);
                 double calculationResult = calculate(matrixId,cellRow,cellCol, _vals);
                 assert calculationResult > -1;
-                keyOut.set(cellRow+"\t"+cellCol+"\t"+calculationResult);
+                keyOut.set((cellRow+1)+"\t"+(cellCol+1)+"\t"+calculationResult);
                 valOut.set(matrixId);
                 context.write(keyOut, valOut);
         }  //reduce
