@@ -172,12 +172,22 @@ public class BatchGradientDescent {
                 double[] oRow = O.getMatrix()[0];
 
                 //first calculate denominator
-                for (int i = 0 ; i < v[cellRow].length ; i++) {
-                    if (oRow[i] != 0 ) {
-                        denominator += v[cellCol][i] * v[cellCol][i] ;
-                    }
+                    for (int i = 0; i < v[cellCol].length; i++) {
+                        try {
+                            if (oRow[i] != 0) {
+                                denominator += v[cellCol][i] * v[cellCol][i];
+                            }
+                        }
+                        catch(ArrayIndexOutOfBoundsException arx) {
+                            throw new ArrayIndexOutOfBoundsException("MatrixID: " + matrixId +
+                                    " cellRow: " + cellRow + " cellCol : " + cellCol +
+                                    " URow: " + uRow.length + " i: " + i +
+                                    " U: " + U.toString() +
+                                    " V: " + V.toString() +
+                                    " O: " + O.toString()
+                            );
+                        }
                 }
-
                 //now calculate the summation at the numerator
                 double kSum = 0;
                 for (int j=0 ; j < oRow.length ; j++ ) {
