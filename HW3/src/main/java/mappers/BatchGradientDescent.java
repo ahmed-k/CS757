@@ -129,17 +129,17 @@ public class BatchGradientDescent {
                     double vVal = Double.valueOf(vals[3]);
                     originalMatrixVector[vRow] = vVal;
                 }*/
-/*                double calculationResult = calculate(matrixId,cellRow,cellCol, _vals);
-                assert calculationResult > -1;*/
-            String valout = "";
+                double calculationResult = calculate(matrixId,cellRow,cellCol, _vals);
+                assert calculationResult > -1;
+/*            String valout = "";
             for (MatrixWritable matrix : _vals) {
                 valout += matrix.toString();
 
-            }
-/*                keyOut.set(cellRow+"\t"+cellCol+"\t"+calculationResult);
-                valOut.set(matrixId);*/
-            keyOut.set("KEY:"+_key.toString()+"\n");
-            valOut.set(valout);
+            }*/
+                keyOut.set(cellRow+"\t"+cellCol+"\t"+calculationResult);
+                valOut.set(matrixId);
+/*            keyOut.set("KEY:"+_key.toString()+"\n");
+            valOut.set(valout);*/
                 context.write(keyOut, valOut);
         }  //reduce
 
@@ -191,10 +191,9 @@ public class BatchGradientDescent {
                                     kSum += cellProduct;
                                 }
                                 catch(ArrayIndexOutOfBoundsException arx) {
-                                    System.err.append(V.toString());
-                                    System.err.append(U.toString());
-                                    System.err.append(O.toString());
-                                    throw arx;
+                                    throw new ArrayIndexOutOfBoundsException("MatrixID: "+ matrixId +
+                                            " cellRow: " + cellRow + " cellCol : " + cellCol +
+                                            " URow: " + uRow.length + " k: " + k + " j: " + j);
                                 }
                             }
                         }
