@@ -62,7 +62,7 @@ public class BatchGradientDescent {
 
             //propagate U and V cells to all concerned parties
             MatrixWritable _U = new MatrixWritable("U", U);
-            MatrixWritable _V = new MatrixWritable("U", V);
+            MatrixWritable _V = new MatrixWritable("V", V);
             MatrixWritable _O = new MatrixWritable("O", O);
 
             //send U keys
