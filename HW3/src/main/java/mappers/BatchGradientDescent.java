@@ -153,13 +153,13 @@ public class BatchGradientDescent {
             for (MatrixWritable matrix : matrices) {
                 String _matrixId = matrix.getId();
                 if ("U".equals(_matrixId)) {
-                    U = matrix;
+                    U = new MatrixWritable("U", matrix.getMatrix());
                 }
                 else if  ("V".equals(_matrixId)) {
-                    V = matrix;
+                    V = new MatrixWritable("V", matrix.getMatrix());
                 }
                 else if ("O".equals(_matrixId)) {
-                    O = matrix;
+                    O = new MatrixWritable("O", matrix.getMatrix());
                 }
             }
 
