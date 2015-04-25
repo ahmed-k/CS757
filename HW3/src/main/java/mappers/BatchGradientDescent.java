@@ -114,36 +114,13 @@ public class BatchGradientDescent {
             String matrixId = key[0];
             int cellRow = Integer.valueOf(key[1]);
             int cellCol = Integer.valueOf(key[2]);
-/*            if ("U".equals(matrixId)) {
-                for (MatrixWritable _val: _vals) {
-                    int vCol = Integer.valueOf(vals[2]);
-                    double vVal = Double.valueOf(vals[3]);
-                    originalMatrixVector[vCol] = vVal;
-                }
-            }
-            else if ("V".equals(matrixId)) {
-                double [] originalMatrixVector = new double[n];
-                for (Text _val: _vals) {
-                    String[] vals = _val.toString().split("\t");
-                    int vRow = Integer.valueOf(vals[1]);
-                    double vVal = Double.valueOf(vals[3]);
-                    originalMatrixVector[vRow] = vVal;
-                }*/
                 double calculationResult = calculate(matrixId,cellRow,cellCol, _vals);
                 assert calculationResult > -1;
-/*            String valout = "";
-            for (MatrixWritable matrix : _vals) {
-                valout += matrix.toString();
-
-            }*/
                 keyOut.set(cellRow+"\t"+cellCol+"\t"+calculationResult);
                 valOut.set(matrixId);
-/*            keyOut.set("KEY:"+_key.toString()+"\n");
-            valOut.set(valout);*/
                 context.write(keyOut, valOut);
         }  //reduce
 
-       //assume MatrixId is only U for now
         public double calculate(String matrixId, int cellRow, int cellCol, Iterable<MatrixWritable> matrices) {
 
             MatrixWritable O = null;
@@ -189,8 +166,8 @@ public class BatchGradientDescent {
                         }
                 }
                 //now calculate the summation at the numerator
-                double kSum = 0;
                 for (int j=0 ; j < oRow.length ; j++ ) {
+                    double kSum = 0;
                     if (oRow[j] != 0) {
                         for (int k = 0; k < uRow.length; k++) {
                             if (k != cellCol) {
@@ -225,8 +202,8 @@ public class BatchGradientDescent {
                      }
                  }
                 //now calculate the summation at the numerator
-                double kSum = 0;
                 for (int i=0 ; i < oCol.length ; i++ ) {
+                    double kSum = 0;
                     if (oCol[i] != 0) {
                         for (int k = 0; k < vCol.length; k++) {
                             if (k != cellRow) {
