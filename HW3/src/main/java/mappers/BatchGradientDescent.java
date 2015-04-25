@@ -148,8 +148,8 @@ public class BatchGradientDescent {
 
                 //first calculate denominator
                 for (int i = 0 ; i < v[cellRow].length ; i++) {
-                    if (oRow[cellCol] != 0 ) {
-                        denominator += v[cellRow][i] * v[cellRow][i] ;
+                    if (oRow[i] != 0 ) {
+                        denominator += v[cellCol][i] * v[cellCol][i] ;
                     }
                 }
 
@@ -158,15 +158,23 @@ public class BatchGradientDescent {
                 for (int j=0 ; j < oRow.length ; j++ ) {
                     if (oRow[j] != 0) {
                         for (int k = 0; k < uRow.length; k++) {
-                            if (k != cellRow) {
-                                double matrixVal = uRow[k];
-                                double otherMatrixVal = v[k][j];
-                                double cellProduct = matrixVal * otherMatrixVal;
-                                kSum += cellProduct;
+                            if (k != cellCol) {
+                                try {
+                                    double matrixVal = uRow[k];
+                                    double otherMatrixVal = v[k][j];
+                                    double cellProduct = matrixVal * otherMatrixVal;
+                                    kSum += cellProduct;
+                                }
+                                catch(ArrayIndexOutOfBoundsException arx) {
+                                    System.err.append(V.toString());
+                                    System.err.append(U.toString());
+                                    System.err.append(O.toString());
+                                    throw arx;
+                                }
                             }
                         }
                         double Mrj = oRow[j];
-                        numerator += Mrj - kSum;
+                        numerator += v[cellCol][j] * (Mrj - kSum);
                     }
                 }
                 return numerator/denominator;
