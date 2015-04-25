@@ -86,7 +86,8 @@ public class MatrixWritable implements WritableComparable<MatrixWritable> {
         }
         retv +="\n";
         for (int i = 0 ; i < matrix.length ; i++ ) {
-            retv += (i +"\t");
+
+            retv += (i +"\t\t");
             for (int j = 0 ; j < matrix[i].length ; j++ ) {
                 retv += matrix[i][j] + "\t";
             }

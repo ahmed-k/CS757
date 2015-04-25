@@ -46,20 +46,20 @@ public class BatchGradientDescent {
             if ("V".equals(matrixID)) {
                 if (V == null) {
                     V = new double [d][n];
-                    V[row-1][col-1] = val;
                 }
+                V[row-1][col-1] = val;
             }
             else if ("U".equals(matrixID)) {
                 if (U == null) {
                     U = new double[m][d];
-                    U[row-1][col-1] = val;
                 }
+                U[row-1][col-1] = val;
             }
             else {
                 if (O == null) {
                     O = new double[m][n];
-                    O[row-1][col-1] = val;
                 }
+                O[row-1][col-1] = val;
             }
         }//map
 
