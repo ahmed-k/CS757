@@ -193,7 +193,11 @@ public class BatchGradientDescent {
                                 catch(ArrayIndexOutOfBoundsException arx) {
                                     throw new ArrayIndexOutOfBoundsException("MatrixID: "+ matrixId +
                                             " cellRow: " + cellRow + " cellCol : " + cellCol +
-                                            " URow: " + uRow.length + " k: " + k + " j: " + j);
+                                            " URow: " + uRow.length + " k: " + k + " j: " + j  +
+                                            " U: "+ U.toString() +
+                                            " V: "+ V.toString() +
+                                            " O: "+ O.toString()
+                                    );
                                 }
                             }
                         }
