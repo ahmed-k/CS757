@@ -31,8 +31,8 @@ public class BatchGradientDescent {
             d = Integer.valueOf(context.getConfiguration().get("d"));
             m = Integer.valueOf(context.getConfiguration().get("m"));
             n = Integer.valueOf(context.getConfiguration().get("n"));
-            V = new double[d][n];
             U = new double[m][d];
+            V = new double[d][n];
             O = new double[m][n];
         }
 
@@ -41,8 +41,8 @@ public class BatchGradientDescent {
             String[] value  = _value.toString().split("\t");
 
             String matrixID = value[2];
-            row      = Integer.valueOf(value[0]);
-            col      = Integer.valueOf(_key.toString());
+            row      = Integer.valueOf(_key.toString());
+            col      = Integer.valueOf(value[0]);
             val      = Double.valueOf(value[1]);
 
             //populate U and V models
