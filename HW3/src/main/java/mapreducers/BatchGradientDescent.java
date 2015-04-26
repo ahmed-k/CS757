@@ -167,8 +167,8 @@ public class BatchGradientDescent {
                 }
                 //now calculate the summation at the numerator
                 for (int j=0 ; j < oRow.length ; j++ ) {
-                    double kSum = 0;
                     if (oRow[j] != 0) {
+                    double kSum = 0;
                         for (int k = 0; k < uRow.length; k++) {
                             if (k != cellCol) {
                                 try {
@@ -203,8 +203,8 @@ public class BatchGradientDescent {
                  }
                 //now calculate the summation at the numerator
                 for (int i=0 ; i < oCol.length ; i++ ) {
-                    double kSum = 0;
                     if (oCol[i] != 0) {
+                        double kSum = 0;
                         for (int k = 0; k < vCol.length; k++) {
                             if (k != cellRow) {
                                 kSum += u[i][k] * vCol[k];
