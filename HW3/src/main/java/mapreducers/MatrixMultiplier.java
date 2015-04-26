@@ -42,9 +42,9 @@ public class MatrixMultiplier {
             //populate U and V models
             if ("V".equals(matrixID)) {
                 if (V == null) {
-                    V = new double [d][n];
+                    V = new double [n][d];
                 }
-                V[row-1][col-1] = val;
+                V[col-1][row-1] = val;
             }
             else if ("U".equals(matrixID)) {
                 if (U == null) {
@@ -57,12 +57,8 @@ public class MatrixMultiplier {
 
         public void cleanup(Context context) throws IOException, InterruptedException {
 
-            //propagate U and V cells to all concerned parties
-
-            //send U keys
-
             for (int r =0 ; r< m ; r++) {
-                for ( int s = 0 ; s < d ; s++){
+                for ( int s = 0 ; s < n ; s++){
                     keyOut.set(r+"\t"+s);
                     if (V != null) {
                         valOut.set(V[s]);
@@ -74,7 +70,6 @@ public class MatrixMultiplier {
                     }
                 }
             }
-            //send V keys
         }
     }
 
@@ -88,14 +83,14 @@ public class MatrixMultiplier {
             String[] key = _key.toString().split("\t");
             int cellRow = Integer.valueOf(key[0]);
             int cellCol = Integer.valueOf(key[1]);
-            double calculationResult = calculateCell(cellRow, cellCol, _vals);
+            double calculationResult = calculateCell(_vals);
             assert calculationResult > -1;
             keyOut.set((cellRow+1)+"\t"+(cellCol+1)+"\t"+calculationResult);
             valOut.set("P");
             context.write(keyOut, valOut);
         }  //reduce
 
-        public double calculateCell(int cellRow, int cellCol, Iterable<MatrixVectorWritable> matrices) {
+        public double calculateCell(Iterable<MatrixVectorWritable> matrices) {
             Iterator<MatrixVectorWritable> iterator = matrices.iterator();
             double[] first= iterator.next().getDoubles();
             double[] second= iterator.next().getDoubles();
