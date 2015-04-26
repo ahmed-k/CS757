@@ -25,7 +25,7 @@ public class MatrixMultiplier {
         static int col;
         static double val;
         static Text keyOut = new Text();
-        static MatrixVectorWritable valOut;
+        static MatrixVectorWritable valOut = new MatrixVectorWritable();
 
         public void setup(Mapper.Context context) throws IOException, InterruptedException {
             d = Integer.valueOf(context.getConfiguration().get("d"));
@@ -88,7 +88,7 @@ public class MatrixMultiplier {
             String[] key = _key.toString().split("\t");
             int cellRow = Integer.valueOf(key[0]);
             int cellCol = Integer.valueOf(key[1]);
-            double calculationResult = calculateCell(cellRow,cellCol, _vals);
+            double calculationResult = calculateCell(cellRow, cellCol, _vals);
             assert calculationResult > -1;
             keyOut.set((cellRow+1)+"\t"+(cellCol+1)+"\t"+calculationResult);
             valOut.set("P");
