@@ -87,8 +87,8 @@ public class BatchGradientDescent {
                 }
             }
             //send V keys
-            for (int r = 0 ; r < d; r++) {
-                for ( int s = 0 ; s < n ; s++ ) {
+            for (int r = 0 ; r < n; r++) {
+                for ( int s = 0 ; s < d ; s++ ) {
                     keyOut.set("V"+"\t"+s+"\t"+r);
                     if (U != null) {
                         context.write(keyOut, _U);
