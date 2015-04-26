@@ -2,6 +2,7 @@ package mapreducers;
 
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -27,18 +28,17 @@ public class BooleanCollapser {
             context.write(keyOut,valOut);
         }//map
     }
-    public static class CollapserReducer extends Reducer<IntWritable, BooleanWritable, Text, BooleanWritable> {
+    public static class CollapserReducer extends Reducer<IntWritable, BooleanWritable, BooleanWritable, NullWritable> {
 
-        static Text keyOut = new Text();
-        static BooleanWritable valOut = new BooleanWritable();
+        static BooleanWritable keyOut = new BooleanWritable();
+        static NullWritable valOut = NullWritable.get();
         static boolean _val= false;
 
         public void reduce (IntWritable _key, Iterable<BooleanWritable> _vals, Context context) throws IOException, InterruptedException {
             for (BooleanWritable val : _vals) {
                 _val |= val.get();
             }
-            keyOut.set("SHALL I CONTINUE?");
-            valOut.set(_val);
+            keyOut.set(_val);
             context.write(keyOut, valOut);
         }  //reduce
 
