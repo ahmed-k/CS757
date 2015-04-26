@@ -7,6 +7,8 @@ import mapreducers.IterationController;
 import mapreducers.MatrixMultiplier;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -33,6 +35,21 @@ public class AssignmentDriver {
         //prepare job config object
         //create job from config object
         Job job;
+
+        //test to see if we can read input from file in HDFS
+        if (m.equals("hdfs")) {
+
+            Path path  = new Path("input/UV_matrices.dat");
+            SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFile.Reader.file(path));
+            IntWritable k = new IntWritable();
+            IntWritable v = new IntWritable();
+            while (reader.next(k,v)) {
+               System.out.println(k.get()+ "\t|||\t" + v.get());
+            }
+            reader.close();
+            System.exit(0);
+
+        }
         if (args.length == 6) {
            job = configureMultiplyJob(conf);
         }
