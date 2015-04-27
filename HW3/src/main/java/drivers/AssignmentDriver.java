@@ -11,22 +11,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  */
 public class AssignmentDriver {
 
-
-    private static Configuration createConfiguration(String[] args) {
-        String m = args[2];
-        String n = args[3];
-        String d = args[4];
-        Configuration conf = new Configuration();
-        conf.set("m", m);
-        conf.set("n", n);
-        conf.set("d", d);
-        return conf;
-    }
-
     public static void main(String[] args) throws Exception {
         //get args
-        Configuration conf = createConfiguration(args);
         JobFactory jf = new JobFactory();
+        Configuration conf = jf.createConfiguration(args);
         Job job;
         if (args.length == 6) {
             job = jf.configureMultiplyJob(conf, args);

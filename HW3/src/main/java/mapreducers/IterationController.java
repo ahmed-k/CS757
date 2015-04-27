@@ -41,7 +41,7 @@ public class IterationController {
             Iterator<DoubleWritable> iterator = _vals.iterator();
             //expect 2 values here
             double comparisonResult = Math.abs(iterator.next().get() - iterator.next().get());
-            _val &= (comparisonResult > 0.5);
+            _val &= (comparisonResult > 0.3);
             keyOut.set(_key.toString());
             valOut.set(_val);
             context.write(keyOut, valOut);

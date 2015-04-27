@@ -8,10 +8,7 @@ import mapreducers.IterationController;
 import mapreducers.MatrixMultiplier;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.BooleanWritable;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
@@ -24,6 +21,16 @@ import java.io.IOException;
  */
 public class JobFactory {
 
+    public Configuration createConfiguration(String[] args) {
+        String m = args[2];
+        String n = args[3];
+        String d = args[4];
+        Configuration conf = new Configuration();
+        conf.set("m", m);
+        conf.set("n", n);
+        conf.set("d", d);
+        return conf;
+    }
     public Job configureMultiplyJob(Configuration conf, String[] args) throws IOException {
         Job job = new Job(conf, "matrix multiplication");
         job.setJarByClass(AssignmentDriver.class);
@@ -61,10 +68,11 @@ public class JobFactory {
         job.setMapperClass(IterationController.IterationMapper.class);
         job.setReducerClass(IterationController.IterationReducer.class);
         job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(MatrixWritable.class);
+        job.setMapOutputValueClass(DoubleWritable.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputValueClass(BooleanWritable.class);
         FileInputFormat.addInputPath(job, new Path("output/part-r-00000"));
+        FileInputFormat.addInputPath(job, new Path("input/UV_matrices.dat"));
         FileOutputFormat.setOutputPath(job, new Path("output/iteration"));
         return job;
     }
