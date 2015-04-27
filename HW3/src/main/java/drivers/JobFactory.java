@@ -64,7 +64,7 @@ public class JobFactory {
         job.setMapOutputValueClass(MatrixWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
-        FileInputFormat.addInputPath(job, new Path("output/part-r-00000"));
+        FileInputFormat.addInputPath(job, new Path("output/bgd/part-r-00000"));
         FileOutputFormat.setOutputPath(job, new Path("output/iteration"));
         return job;
     }
