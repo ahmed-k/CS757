@@ -17,6 +17,7 @@ public class AssignmentDriver {
         Configuration conf = jf.createConfiguration(args);
         Job job;
         if (args.length == 6) {
+            System.out.println("Running final matrix multplication job...");
             job = jf.configureMultiplyJob(conf, args);
             System.exit(job.waitForCompletion(true)? 0 :1);
         }
@@ -25,8 +26,10 @@ public class AssignmentDriver {
             FileInputFormat.addInputPath(job, new Path(args[0]));
             FileOutputFormat.setOutputPath(job, new Path(args[1]));
             if (job.waitForCompletion(true)) {
+                System.out.println("Running conversion to boolean...");
                 Job job2 = jf.createIterationJob();
                 if(job2.waitForCompletion(true)) {
+                    System.out.println("Collapsing booleans into single boolean...");
                     Job job3 = jf.createCollapseJob();
                     System.exit(job3.waitForCompletion(true)? 0: 1);
                 }
