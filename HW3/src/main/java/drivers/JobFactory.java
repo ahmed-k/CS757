@@ -71,7 +71,7 @@ public class JobFactory {
         job.setMapOutputValueClass(DoubleWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(BooleanWritable.class);
-        FileInputFormat.addInputPath(job, new Path("output/part-r-00000"));
+        FileInputFormat.addInputPath(job, new Path("output/bgd/part-r-00000"));
         FileInputFormat.addInputPath(job, new Path("input/UV_matrices.dat"));
         FileOutputFormat.setOutputPath(job, new Path("output/iteration"));
         return job;
