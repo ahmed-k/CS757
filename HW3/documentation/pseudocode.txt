@@ -1,0 +1,63 @@
+Ahmed Alabdullah 
+Assignment #3
+Pseudocode for the Source Code
+
+TABLE OF CONTENTS
+
+1. Project Tree
+2. Scripts Folder
+3. RUNBGD.SH 
+
+##1 PROJECT TREE:
+
+src: 		contains Java source code.
+scripts: 	contains bash scripts to facilitate copying files between 			computers, compile, and then run the program.
+sample_output: 	a small sample of the final predication matrix produced by the program.
+documentation: 	contains this file. 
+
+##2: SCRIPTS 
+
+the scripts folder contains the following:
+compile.sh : this compiles the source code, using maven.
+git.sh : this downloads my source code from github.
+get.sh : this gets the final output from hadoop into the local directory
+runBGD.sh: this is the script which runs BGD iteratively.
+
+runBGD.sh  is the first step into the program, so let's look at it next:
+
+##3: RUNBGD.SH PSEUDOCODE
+
+cleanup the input and output folders in hadoop FS 
+copy the original and UV matrix input files into hadoop
+BGD_DONE = false 
+while BDG_done isn't true:
+ run BGD job on U and V matrices with dimensions: [m,n,d] (m n and d are input parameters)
+ the Jar file will run BGD, then compare new UV matrix against old, produce a list of booleans for every cell, a new job collapses those booleans into one boolean which becomes the new file of BGD_DONE
+end while loop
+if BDG_done is true: run matrix multiplication job (same jar, adding a final parameter "mul" to the matrix dimensions
+
+
+##4: JAVA SOURCE CODE
+under src/main/java:
+
+customkeys :	custom map-reduce keys used by the program.
+
+MatrixVectorWritable: this is a single-array object representing a vector in a matrix, could be either a row or a column. Used in Matrix Multiplication. 
+MatrixWritable: this has a two-dimesional array object representing a matrix. Used in BGD. 
+	
+drivers: classes which orchestrate the hadoop jobs.	
+
+AssignmentDriver: the class with the main method. Responsible for running  various jobs in the jar file. 
+JobFactory: Configures jobs as requested by Assignment Driver. 
+
+when the jar is called by hadoop, AssignmentDriver
+
+
+ 
+
+
+
+
+
+
+
